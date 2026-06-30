@@ -1,0 +1,2483 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dan Atelier 3D – L'art en profondeur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #060608;
+  --bg2: #0d0d12;
+  --gold: #c9a84c;
+  --gold2: #f0c96a;
+  --gold-glow: rgba(201,168,76,0.25);
+  --glass: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.12);
+  --glass-hover: rgba(255,255,255,0.10);
+  --text: #f0ede8;
+  --text-muted: rgba(240,237,232,0.6);
+  --red: #e05252;
+  --green: #52c284;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-lg: 24px;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 3px; }
+
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+}
+.glass-sm {
+  background: var(--glass);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+}
+
+/* ── NAVIGATION ── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 24px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(6,6,8,0.7);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border-bottom: 1px solid var(--glass-border);
+  transition: all 0.3s ease;
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold);
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 20px var(--gold-glow);
+  transition: all 0.3s;
+}
+.nav-logo span { color: var(--text); font-weight: 400; }
+.nav-logo:hover { text-shadow: 0 0 40px var(--gold-glow), 0 0 10px var(--gold); }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+}
+.nav-link {
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 50px;
+  border: 1px solid transparent;
+  transition: all 0.25s ease;
+  background: none;
+  letter-spacing: 0.3px;
+}
+.nav-link:hover, .nav-link.active {
+  color: var(--text);
+  background: var(--glass);
+  border-color: var(--glass-border);
+}
+.nav-cart-btn {
+  position: relative;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 50px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-cart-btn:hover { background: var(--glass-hover); color: var(--text); border-color: var(--gold); }
+.cart-badge {
+  position: absolute;
+  top: -4px; right: -4px;
+  background: var(--gold);
+  color: #000;
+  font-size: 10px;
+  font-weight: 700;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 8px;
+  background: none;
+  border: none;
+}
+.nav-hamburger span {
+  display: block;
+  width: 22px; height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 80px 24px 40px;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 80%, rgba(100,60,200,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 40% at 20% 70%, rgba(201,168,76,0.06) 0%, transparent 50%);
+}
+.hero-orbs { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: orbFloat 8s ease-in-out infinite;
+}
+.orb-1 { width: 500px; height: 500px; background: rgba(201,168,76,0.07); top: -100px; right: -100px; animation-delay: 0s; }
+.orb-2 { width: 400px; height: 400px; background: rgba(100,60,200,0.06); bottom: 0; left: -100px; animation-delay: 3s; }
+.orb-3 { width: 300px; height: 300px; background: rgba(201,168,76,0.05); top: 40%; left: 30%; animation-delay: 5s; }
+@keyframes orbFloat {
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-30px) scale(1.05); }
+}
+.hero-content { position: relative; text-align: center; max-width: 800px; z-index: 1; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 50px;
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+  backdrop-filter: blur(10px);
+}
+.hero-badge::before { content: '✦'; font-size: 8px; }
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 8vw, 90px);
+  font-weight: 700;
+  line-height: 1.05;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #fff 30%, var(--gold2) 70%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-subtitle {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(18px, 3vw, 28px);
+  font-style: italic;
+  color: var(--gold);
+  margin-bottom: 24px;
+  font-weight: 400;
+  opacity: 0.9;
+}
+.hero-desc {
+  font-size: 17px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 560px;
+  margin: 0 auto 48px;
+}
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0);
+  transition: background 0.3s;
+  border-radius: inherit;
+}
+.btn:hover::after { background: rgba(255,255,255,0.07); }
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold), #a8722c);
+  color: #000;
+  font-weight: 600;
+  box-shadow: 0 4px 30px rgba(201,168,76,0.35), 0 0 0 1px rgba(201,168,76,0.2);
+}
+.btn-primary:hover { box-shadow: 0 8px 40px rgba(201,168,76,0.5), 0 0 0 1px rgba(201,168,76,0.4); transform: translateY(-2px); }
+.btn-glass {
+  background: var(--glass);
+  color: var(--text);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+}
+.btn-glass:hover { background: var(--glass-hover); border-color: rgba(255,255,255,0.25); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+.btn-outline {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+}
+.btn-outline:hover { background: rgba(201,168,76,0.1); box-shadow: 0 0 20px var(--gold-glow); }
+.btn-sm { padding: 8px 18px; font-size: 13px; }
+.btn-lg { padding: 18px 36px; font-size: 16px; }
+.btn-danger { background: rgba(224,82,82,0.15); color: var(--red); border: 1px solid rgba(224,82,82,0.3); }
+.btn-danger:hover { background: rgba(224,82,82,0.25); }
+.btn-success { background: rgba(82,194,132,0.15); color: var(--green); border: 1px solid rgba(82,194,132,0.3); }
+.btn-success:hover { background: rgba(82,194,132,0.25); }
+
+/* ── SECTIONS ── */
+.section {
+  padding: 80px 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.section-header { text-align: center; margin-bottom: 56px; }
+.section-label {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+  font-weight: 500;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+.section-title em { font-style: italic; color: var(--gold); }
+.section-desc {
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+.divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 20px auto;
+}
+
+/* ── CATEGORIES ── */
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+.category-card {
+  position: relative;
+  height: 320px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.category-card:hover { transform: translateY(-8px) scale(1.01); }
+.category-card-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.6s ease;
+}
+.category-card:hover .category-card-bg { transform: scale(1.08); }
+.category-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+}
+.category-card-glass {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 24px;
+  background: linear-gradient(to top, rgba(6,6,8,0.9) 0%, rgba(6,6,8,0.3) 100%);
+  backdrop-filter: blur(4px);
+}
+.category-card-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+.category-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.category-card-count { font-size: 13px; color: var(--gold); font-weight: 500; }
+.category-card-arrow {
+  position: absolute;
+  top: 20px; right: 20px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.3s;
+  opacity: 0;
+}
+.category-card:hover .category-card-arrow { opacity: 1; transform: rotate(45deg); }
+
+/* ── GALLERY FILTERS ── */
+.gallery-filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+  justify-content: center;
+}
+.filter-btn {
+  padding: 8px 20px;
+  border-radius: 50px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s;
+  backdrop-filter: blur(10px);
+  font-family: 'Inter', sans-serif;
+}
+.filter-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+.filter-btn.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 600; }
+
+/* ── ARTWORKS GRID ── */
+.artworks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+.artwork-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  position: relative;
+}
+.artwork-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.2);
+  border-color: rgba(201,168,76,0.3);
+}
+.artwork-img-wrap {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+}
+.artwork-thumb {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+  aspect-ratio: 4/3;
+  transition: transform 0.6s ease;
+}
+.artwork-card:hover .artwork-thumb { transform: scale(1.06); }
+.artwork-sold-badge {
+  position: absolute;
+  top: 12px; right: 12px;
+  padding: 4px 12px;
+  background: rgba(224,82,82,0.9);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 50px;
+  backdrop-filter: blur(8px);
+}
+.artwork-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s;
+}
+.artwork-card:hover .artwork-overlay { background: rgba(0,0,0,0.4); opacity: 1; }
+.artwork-overlay-btns { display: flex; gap: 10px; }
+.artwork-info { padding: 18px; }
+.artwork-category {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.artwork-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+.artwork-dims { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
+.artwork-footer { display: flex; align-items: center; justify-content: space-between; }
+.artwork-price {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--gold);
+  font-family: 'Playfair Display', serif;
+}
+.artwork-price.sold { color: var(--red); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.modal-content {
+  background: #121216;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+  position: relative;
+}
+.modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--text);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  transition: all 0.2s;
+}
+.modal-close:hover { background: var(--glass-hover); }
+.modal-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.modal-img-side { position: relative; min-height: 400px; }
+.modal-thumb {
+  width: 100%; height: 100%;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 100px;
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+}
+.modal-info-side {
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.modal-category { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); }
+.modal-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; line-height: 1.2; }
+.modal-dims { font-size: 13px; color: var(--text-muted); }
+.modal-desc { font-size: 15px; color: var(--text-muted); line-height: 1.7; }
+.modal-price { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--gold); }
+.modal-price.sold { color: var(--red); font-size: 20px; }
+.modal-actions { display: flex; gap: 12px; margin-top: auto; flex-wrap: wrap; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  padding: 120px 24px 60px;
+  text-align: center;
+  position: relative;
+}
+.page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.page-subtitle { font-size: 16px; color: var(--text-muted); }
+
+/* ── CART ── */
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+  align-items: start;
+}
+.cart-items { display: flex; flex-direction: column; gap: 16px; }
+.cart-item {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(16px);
+  transition: border-color 0.2s;
+}
+.cart-item:hover { border-color: rgba(201,168,76,0.2); }
+.cart-item-thumb {
+  width: 100px; height: 80px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+.cart-item-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+.cart-item-cat { font-size: 12px; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; }
+.cart-item-price { font-size: 20px; font-weight: 600; color: var(--gold); white-space: nowrap; }
+.cart-remove {
+  background: none;
+  border: none;
+  color: var(--red);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.cart-remove:hover { opacity: 1; }
+.cart-summary {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  backdrop-filter: blur(20px);
+  position: sticky;
+  top: 90px;
+}
+.summary-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600; margin-bottom: 24px; }
+.summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 15px; color: var(--text-muted); }
+.summary-row.total { color: var(--text); font-weight: 600; font-size: 18px; padding-top: 16px; border-top: 1px solid var(--glass-border); margin-top: 16px; }
+.summary-row.total .amount { color: var(--gold); font-size: 22px; }
+
+.empty-state { text-align: center; padding: 80px 24px; }
+.empty-icon { font-size: 64px; margin-bottom: 20px; opacity: 0.5; }
+.empty-title { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 8px; }
+.empty-desc { color: var(--text-muted); margin-bottom: 28px; }
+
+/* ── CHECKOUT ── */
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+  align-items: start;
+}
+.form-section {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  backdrop-filter: blur(16px);
+  margin-bottom: 20px;
+}
+.form-section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.form-section-title::before { content: ''; width: 4px; height: 20px; background: var(--gold); border-radius: 2px; display: block; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-label { font-size: 13px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.3px; }
+.form-input, .form-select, .form-textarea {
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+  width: 100%;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.05);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+}
+.form-input::placeholder { color: rgba(240,237,232,0.3); }
+.form-select option { background: #1a1a1f; color: var(--text); }
+.form-textarea { resize: vertical; min-height: 100px; }
+
+/* ── RESERVATION ── */
+.reservation-layout {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+.reservation-intro {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 36px;
+}
+.reservation-step {
+  text-align: center;
+  padding: 24px 16px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(16px);
+}
+.step-num {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), #a8722c);
+  color: #000;
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+.step-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+.step-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+/* ── ADMIN ── */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 36px;
+}
+.stat-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  backdrop-filter: blur(16px);
+  text-align: center;
+  transition: border-color 0.2s;
+}
+.stat-card:hover { border-color: rgba(201,168,76,0.25); }
+.stat-value { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--gold); }
+.stat-label { font-size: 12px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.tab-btn {
+  padding: 10px 20px;
+  border-radius: 50px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s;
+  font-family: 'Inter', sans-serif;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 600; }
+.tab-btn.ml-auto { margin-left: auto; }
+
+/* Admin artwork cards grid */
+.admin-artworks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.admin-artwork-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+  transition: all 0.3s;
+}
+.admin-artwork-card:hover { border-color: rgba(201,168,76,0.3); transform: translateY(-2px); }
+.admin-card-thumb {
+  width: 100%; height: 180px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 64px; position: relative; overflow: hidden;
+}
+.admin-card-thumb img {
+  width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0;
+}
+.admin-card-sold-overlay {
+  position: absolute; inset: 0;
+  background: rgba(224,82,82,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: #fff; backdrop-filter: blur(2px);
+}
+.admin-card-body { padding: 16px; }
+.admin-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 600; margin-bottom: 4px;
+}
+.admin-card-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+.admin-card-price { font-size: 20px; font-weight: 700; color: var(--gold); margin-bottom: 14px; font-family: 'Playfair Display', serif; }
+.admin-card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.admin-table-wrap {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+}
+.admin-table { width: 100%; border-collapse: collapse; }
+.admin-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  border-bottom: 1px solid var(--glass-border);
+}
+.admin-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 14px;
+  color: var(--text-muted);
+  vertical-align: middle;
+}
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr:hover td { background: rgba(255,255,255,0.02); }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.badge-available { background: rgba(82,194,132,0.15); color: var(--green); border: 1px solid rgba(82,194,132,0.3); }
+.badge-sold { background: rgba(224,82,82,0.15); color: var(--red); border: 1px solid rgba(224,82,82,0.3); }
+.badge-pending { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+.badge-confirmed { background: rgba(82,194,132,0.15); color: var(--green); border: 1px solid rgba(82,194,132,0.3); }
+.badge-done { background: rgba(255,255,255,0.08); color: var(--text-muted); border: 1px solid var(--glass-border); }
+.actions-cell { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+/* Inline price edit */
+.price-edit-wrap { display: flex; align-items: center; gap: 8px; }
+.price-inline {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 4px 10px;
+  width: 100px;
+  font-family: 'Inter', sans-serif;
+}
+.price-inline:focus { outline: none; border-color: var(--gold); background: rgba(201,168,76,0.05); }
+
+/* Order detail expand */
+.order-row { cursor: pointer; }
+.order-detail-row td { padding: 0 !important; border: none !important; }
+.order-detail-inner {
+  padding: 16px 24px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.order-items-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.order-item-line {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 12px;
+  background: var(--glass);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+
+.add-form {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  backdrop-filter: blur(16px);
+  margin-bottom: 36px;
+}
+
+/* Image upload zone */
+.img-upload-zone {
+  border: 2px dashed var(--glass-border);
+  border-radius: var(--radius);
+  padding: 32px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.img-upload-zone:hover, .img-upload-zone.dragover {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.05);
+}
+.img-upload-zone input[type="file"] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.img-upload-icon { font-size: 36px; margin-bottom: 10px; }
+.img-upload-label { font-size: 14px; color: var(--text-muted); }
+.img-upload-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; opacity: 0.6; }
+.img-preview-strip {
+  display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px;
+}
+.img-preview-thumb {
+  width: 80px; height: 64px;
+  border-radius: 8px; object-fit: cover;
+  border: 2px solid var(--glass-border);
+  position: relative;
+  display: inline-block;
+}
+.img-preview-wrap {
+  position: relative; display: inline-block;
+}
+.img-preview-remove {
+  position: absolute; top: -6px; right: -6px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+
+/* Edit artwork modal */
+.edit-modal-overlay {
+  position: fixed; inset: 0; z-index: 250;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.2s ease;
+}
+.edit-modal {
+  background: #121216;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  max-width: 700px; width: 100%;
+  max-height: 92vh; overflow-y: auto;
+  animation: slideUp 0.3s ease;
+  padding: 36px;
+  position: relative;
+}
+.edit-modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px; font-weight: 700; margin-bottom: 28px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.edit-modal-close {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  color: var(--text); font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0;
+}
+.edit-modal-close:hover { background: var(--glass-hover); }
+
+.login-card {
+  background: #121216;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 420px;
+  animation: slideUp 0.3s ease;
+}
+.login-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+.login-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 32px; }
+
+/* Section tabs */
+.admin-section-wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px 80px; }
+
+/* Orders */
+.orders-filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+
+/* Notification dot */
+.tab-notif {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--red); color: #fff;
+  font-size: 10px; font-weight: 700;
+  width: 16px; height: 16px; border-radius: 50%;
+  margin-left: 6px; vertical-align: middle;
+}
+
+@media (max-width: 768px) {
+  .admin-artworks-grid { grid-template-columns: 1fr; }
+  .edit-modal { padding: 24px 18px; }
+}
+
+/* ── CONFIRMATION ── */
+.confirmation-card {
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+.confirmation-icon { font-size: 80px; margin-bottom: 24px; animation: bounceIn 0.6s ease; }
+@keyframes bounceIn { 0% { transform: scale(0); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
+.confirmation-title { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; margin-bottom: 12px; }
+.confirmation-desc { font-size: 16px; color: var(--text-muted); line-height: 1.7; margin-bottom: 36px; }
+.confirmation-details {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  backdrop-filter: blur(16px);
+  text-align: left;
+  margin-bottom: 28px;
+}
+.conf-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
+.conf-row:last-child { margin-bottom: 0; padding-top: 12px; border-top: 1px solid var(--glass-border); color: var(--gold); font-weight: 600; font-size: 16px; }
+.conf-label { color: var(--text-muted); }
+
+/* ── ABOUT ── */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.about-text h2 { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+.about-text p { font-size: 16px; color: var(--text-muted); line-height: 1.8; margin-bottom: 16px; }
+.about-img-wrap { position: relative; border-radius: var(--radius-lg); overflow: hidden; aspect-ratio: 4/5; }
+.about-img-placeholder { width: 100%; height: 100%; background: linear-gradient(135deg, rgba(201,168,76,0.15) 0%, rgba(100,60,200,0.15) 100%); display: flex; align-items: center; justify-content: center; font-size: 80px; }
+.about-stats { display: flex; gap: 32px; margin-top: 32px; }
+.about-stat-num { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 700; color: var(--gold); }
+.about-stat-label { font-size: 13px; color: var(--text-muted); letter-spacing: 1px; }
+
+/* ── PROCESS ── */
+.process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+.process-card { padding: 28px 24px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius); backdrop-filter: blur(16px); text-align: center; transition: all 0.3s; }
+.process-card:hover { transform: translateY(-4px); border-color: rgba(201,168,76,0.3); }
+.process-icon { font-size: 36px; margin-bottom: 14px; }
+.process-num { font-size: 11px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; font-weight: 500; }
+.process-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+.process-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+/* ── TESTIMONIALS ── */
+.testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.testimonial-card { padding: 28px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius); backdrop-filter: blur(16px); }
+.testimonial-stars { color: var(--gold); font-size: 16px; margin-bottom: 14px; letter-spacing: 2px; }
+.testimonial-text { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+.testimonial-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), #a8722c); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #000; font-size: 14px; }
+.testimonial-name { font-weight: 600; font-size: 14px; }
+.testimonial-date { font-size: 12px; color: var(--text-muted); }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--glass-border);
+  padding: 48px 24px 32px;
+  text-align: center;
+}
+.footer-logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--gold); margin-bottom: 8px; }
+.footer-tagline { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; font-style: italic; }
+.footer-links { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 28px; }
+.footer-link { font-size: 13px; color: var(--text-muted); cursor: pointer; transition: color 0.2s; }
+.footer-link:hover { color: var(--gold); }
+.footer-bottom { font-size: 12px; color: rgba(240,237,232,0.3); }
+
+/* ── TOAST ── */
+.toast-container {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: #1a1a1f;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  color: var(--text);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  animation: slideInRight 0.3s ease;
+  pointer-events: all;
+  min-width: 260px;
+}
+.toast.success { border-left: 3px solid var(--green); }
+.toast.error { border-left: 3px solid var(--red); }
+.toast.info { border-left: 3px solid var(--gold); }
+@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 72px; left: 0; right: 0; bottom: 0;
+    background: rgba(6,6,8,0.97);
+    backdrop-filter: blur(20px);
+    padding: 24px;
+    gap: 4px;
+    overflow-y: auto;
+    z-index: 99;
+  }
+  .nav-hamburger { display: flex; }
+  .hero-buttons { flex-direction: column; align-items: center; }
+  .modal-body { grid-template-columns: 1fr; }
+  .modal-thumb { border-radius: var(--radius-lg) var(--radius-lg) 0 0; min-height: 260px; font-size: 64px; }
+  .cart-layout, .checkout-layout { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .about-grid { grid-template-columns: 1fr; }
+  .reservation-intro { grid-template-columns: 1fr; }
+  .cart-item { grid-template-columns: 80px 1fr; }
+  .admin-table { display: block; overflow-x: auto; }
+  .modal-info-side { padding: 24px 20px; }
+}
+
+/* ── HIDDEN ── */
+.hidden { display: none !important; }
+.d-flex { display: flex; }
+.w-full { width: 100%; justify-content: center; }
+</style>
+</head>
+<body>
+
+<!-- ── NAVIGATION ── -->
+<nav class="nav" id="nav">
+  <div class="nav-logo" onclick="go('home')">Dan <span>Atelier</span> 3D</div>
+  <ul class="nav-links" id="navLinks">
+    <li><span class="nav-link" data-page="home" onclick="go('home')">Accueil</span></li>
+    <li><span class="nav-link" data-page="gallery" onclick="go('gallery')">Galerie</span></li>
+    <li><span class="nav-link" data-page="reservation" onclick="go('reservation')">Réservation</span></li>
+    <li>
+      <button class="nav-cart-btn" onclick="go('cart')">
+        🛒 Panier
+        <span class="cart-badge hidden" id="cartBadge">0</span>
+      </button>
+    </li>
+
+  </ul>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span id="ham1"></span>
+    <span id="ham2"></span>
+    <span id="ham3"></span>
+  </button>
+</nav>
+
+<!-- ── PAGES ── -->
+<div id="app">
+
+<!-- HOME PAGE (fully dynamic via siteConfig) -->
+<div id="page-home" style="min-height:100vh"></div>
+
+<!-- GALLERY PAGE -->
+<div id="page-gallery" class="hidden">
+  <div class="page-header">
+    <p class="section-label">Collection complète</p>
+    <h1 class="page-title">La <em style="color:var(--gold);font-style:italic">Galerie</em></h1>
+    <p class="page-subtitle" id="galleryCount"></p>
+  </div>
+  <div class="section" style="padding-top:0">
+    <div class="gallery-filters" id="galleryFilters"></div>
+    <div id="galleryEmpty" class="empty-state hidden">
+      <div class="empty-icon">🎨</div>
+      <div class="empty-title">Aucune œuvre dans cette catégorie</div>
+      <div class="empty-desc">Essayez une autre catégorie ou revenez bientôt.</div>
+    </div>
+    <div class="artworks-grid" id="galleryGrid"></div>
+  </div>
+</div>
+
+<!-- CART PAGE -->
+<div id="page-cart" class="hidden">
+  <div class="page-header">
+    <h1 class="page-title">🛒 Votre Panier</h1>
+    <p class="page-subtitle" id="cartCountLabel"></p>
+  </div>
+  <div id="cartEmpty" class="empty-state hidden">
+    <div class="empty-icon">🛒</div>
+    <div class="empty-title">Votre panier est vide</div>
+    <div class="empty-desc">Découvrez nos œuvres et ajoutez-en à votre panier.</div>
+    <button class="btn btn-primary btn-lg" onclick="go('gallery')">Explorer la galerie</button>
+  </div>
+  <div id="cartContent" class="cart-layout hidden">
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-summary">
+      <div class="summary-title">Récapitulatif</div>
+      <div id="cartSummaryRows"></div>
+      <div class="summary-row"><span>Livraison</span><span style="color:var(--green)">Gratuite</span></div>
+      <div class="summary-row total"><span>Total</span><span class="amount" id="cartTotal"></span></div>
+      <button class="btn btn-primary w-full d-flex" style="margin-top:24px" onclick="go('checkout')">Passer la commande →</button>
+      <button class="btn btn-glass w-full d-flex" style="margin-top:10px" onclick="go('gallery')">Continuer mes achats</button>
+      <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:16px;line-height:1.5">🔒 Paiement sécurisé · 📦 Livraison offerte · 30j satisfait ou échangé</p>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT PAGE -->
+<div id="page-checkout" class="hidden">
+  <div class="page-header">
+    <h1 class="page-title">Finaliser la commande</h1>
+  </div>
+  <div class="checkout-layout">
+    <div>
+      <div class="form-section">
+        <div class="form-section-title">Informations personnelles</div>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Prénom *</label><input class="form-input" id="ck-firstName" placeholder="Marie" /></div>
+          <div class="form-group"><label class="form-label">Nom *</label><input class="form-input" id="ck-lastName" placeholder="Dupont" /></div>
+          <div class="form-group"><label class="form-label">Email *</label><input class="form-input" type="email" id="ck-email" placeholder="marie@email.com" /></div>
+          <div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" id="ck-phone" placeholder="06 12 34 56 78" /></div>
+        </div>
+      </div>
+      <div class="form-section">
+        <div class="form-section-title">Adresse de livraison</div>
+        <div class="form-grid">
+          <div class="form-group full"><label class="form-label">Adresse *</label><input class="form-input" id="ck-address" placeholder="12 rue des Arts" /></div>
+          <div class="form-group"><label class="form-label">Ville</label><input class="form-input" id="ck-city" placeholder="Paris" /></div>
+          <div class="form-group"><label class="form-label">Code postal</label><input class="form-input" id="ck-zip" placeholder="75001" /></div>
+          <div class="form-group">
+            <label class="form-label">Pays</label>
+            <select class="form-select" id="ck-country">
+              <option>France</option><option>Belgique</option><option>Suisse</option><option>Luxembourg</option><option>Canada</option><option>Autre</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">Notes de livraison</label><textarea class="form-textarea" id="ck-notes" placeholder="Instructions particulières..." rows="3"></textarea></div>
+        </div>
+      </div>
+      <div class="form-section">
+        <div class="form-section-title">Paiement sécurisé</div>
+        <div style="background:rgba(82,194,132,0.1);border:1px solid rgba(82,194,132,0.2);border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--green)">
+          🔒 Vos données sont chiffrées et sécurisées (mode démo)
+        </div>
+        <div class="form-grid">
+          <div class="form-group full"><label class="form-label">Nom sur la carte *</label><input class="form-input" id="ck-cardName" placeholder="MARIE DUPONT" /></div>
+          <div class="form-group full"><label class="form-label">Numéro de carte *</label><input class="form-input" id="ck-cardNum" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)" /></div>
+          <div class="form-group"><label class="form-label">Expiration</label><input class="form-input" id="ck-cardExp" placeholder="MM/AA" maxlength="5" /></div>
+          <div class="form-group"><label class="form-label">CVV</label><input class="form-input" id="ck-cardCvc" placeholder="123" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'')" /></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="cart-summary">
+        <div class="summary-title">Votre commande</div>
+        <div id="checkoutSummaryRows"></div>
+        <div class="summary-row"><span>Livraison</span><span style="color:var(--green)">Gratuite</span></div>
+        <div class="summary-row total"><span>Total</span><span class="amount" id="checkoutTotal"></span></div>
+        <button class="btn btn-primary w-full d-flex" style="margin-top:24px" id="checkoutBtn" onclick="submitCheckout()">✓ Confirmer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRMATION PAGE -->
+<div id="page-confirmation" class="hidden">
+  <div class="page-header">
+    <h1 class="page-title">Commande confirmée</h1>
+  </div>
+  <div class="confirmation-card">
+    <div class="confirmation-icon">🎉</div>
+    <h2 class="confirmation-title">Merci pour votre commande !</h2>
+    <p class="confirmation-desc">Votre commande a été confirmée. Dan prépare votre tableau avec le plus grand soin. Vous recevrez un email de confirmation sous peu.</p>
+    <div class="confirmation-details" id="confirmationDetails"></div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px">
+      <button class="btn btn-primary btn-lg" onclick="go('home')">Retour à l'accueil</button>
+      <button class="btn btn-glass btn-lg" onclick="go('gallery')">Continuer mes achats</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESERVATION PAGE -->
+<div id="page-reservation" class="hidden">
+  <div class="page-header">
+    <p class="section-label">Création sur mesure</p>
+    <h1 class="page-title">Réserver une <em style="color:var(--gold);font-style:italic">création</em></h1>
+    <p class="page-subtitle">Votre idée, notre expertise</p>
+  </div>
+  <div class="reservation-layout">
+    <div class="reservation-intro">
+      <div class="reservation-step"><div class="step-num">1</div><div class="step-title">Envoyez votre demande</div><div class="step-desc">Décrivez votre projet via ce formulaire</div></div>
+      <div class="reservation-step"><div class="step-num">2</div><div class="step-title">Échange avec Dan</div><div class="step-desc">Contact sous 48h pour discuter des détails</div></div>
+      <div class="reservation-step"><div class="step-num">3</div><div class="step-title">Création unique</div><div class="step-desc">Votre tableau réalisé avec passion</div></div>
+    </div>
+    <div id="resForm">
+      <div class="form-section">
+        <div class="form-section-title">Vos coordonnées</div>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Nom complet *</label><input class="form-input" id="res-name" placeholder="Marie Dupont" /></div>
+          <div class="form-group"><label class="form-label">Email *</label><input class="form-input" type="email" id="res-email" placeholder="marie@email.com" /></div>
+          <div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" id="res-phone" placeholder="06 12 34 56 78" /></div>
+          <div class="form-group">
+            <label class="form-label">Type de création</label>
+            <select class="form-select" id="res-type" onchange="checkPhotoNotice()">
+              <option value="acrylique">Acrylique sur Époxy</option>
+              <option value="personnelles">Création Personnelle</option>
+              <option value="portrait">Portrait Artistique</option>
+              <option value="photo">Tableau d'après Photo</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="form-section">
+        <div class="form-section-title">Détails du projet</div>
+        <div class="form-grid">
+          <div class="form-group full"><label class="form-label">Description du projet *</label><textarea class="form-textarea" id="res-desc" placeholder="Décrivez votre idée : sujet, ambiance, couleurs souhaitées, occasion particulière..." rows="4"></textarea></div>
+          <div class="form-group"><label class="form-label">Dimensions souhaitées</label><input class="form-input" id="res-dims" placeholder="ex: 60×80 cm" /></div>
+          <div class="form-group">
+            <label class="form-label">Budget approximatif</label>
+            <select class="form-select" id="res-budget">
+              <option value="">À définir ensemble</option>
+              <option>200–400 €</option>
+              <option>400–600 €</option>
+              <option>600–900 €</option>
+              <option>900–1500 €</option>
+              <option>+ de 1500 €</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Date souhaitée</label><input class="form-input" type="date" id="res-deadline" /></div>
+          <div class="form-group full"><label class="form-label">Notes supplémentaires</label><textarea class="form-textarea" id="res-notes" placeholder="Toute information utile pour votre projet..." rows="3"></textarea></div>
+          <div class="form-group full hidden" id="photoNotice" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:20px">
+            <p style="font-size:14px;color:var(--text-muted);line-height:1.6">📸 <strong style="color:var(--text)">Tableau d'après photo</strong> — Après validation de votre demande, Dan vous contactera pour recevoir votre photo en haute résolution.</p>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-lg w-full d-flex" id="resBtn" onclick="submitReservation()">✦ Envoyer ma demande de réservation</button>
+    </div>
+    <div id="resSuccess" class="hidden">
+      <div class="confirmation-card">
+        <div class="confirmation-icon">🎨</div>
+        <h2 class="confirmation-title">Votre demande est bien reçue !</h2>
+        <p class="confirmation-desc">Dan va étudier votre projet et vous contactera dans les 48h pour discuter des détails et confirmer votre réservation.</p>
+        <div class="confirmation-details" id="resDetails"></div>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px">
+          <button class="btn btn-primary btn-lg" onclick="go('home')">Retour à l'accueil</button>
+          <button class="btn btn-glass btn-lg" onclick="go('gallery')">Voir la galerie</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Dan Atelier 3D</div>
+  <div class="footer-tagline">"L'art en profondeur – Résine époxy & Acrylique"</div>
+  <div class="footer-links">
+    <span class="footer-link" onclick="go('home')">Accueil</span>
+    <span class="footer-link" onclick="go('gallery')">Galerie</span>
+    <span class="footer-link" onclick="go('reservation')">Réservation</span>
+    <span class="footer-link" onclick="go('cart')">Panier</span>
+  </div>
+  <div class="footer-bottom">
+    © 2024 Dan Atelier 3D — Tous droits réservés · Créations artisanales sur résine époxy
+    <span style="opacity:0;user-select:none;font-size:1px" onclick="go('admin')" title="">·</span>
+  </div>
+</footer>
+
+<!-- ARTWORK MODAL -->
+<div id="artworkModal" class="modal-overlay hidden" onclick="closeModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-body">
+      <div class="modal-img-side">
+        <div id="modalThumb" class="modal-thumb"></div>
+      </div>
+      <div class="modal-info-side">
+        <div class="modal-category" id="modalCategory"></div>
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <div class="modal-dims" id="modalDims"></div>
+        <p class="modal-desc" id="modalDesc"></p>
+        <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:16px 20px;font-size:13px;color:var(--text-muted);line-height:1.6">
+          <strong style="color:var(--text)">✓ Certificat d'authenticité</strong><br />
+          ✓ Livraison sécurisée incluse · ✓ Satisfait ou échangé 30 jours
+        </div>
+        <div class="modal-price" id="modalPrice"></div>
+        <div class="modal-actions" id="modalActions"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ─── DEFAULTS DATA ───────────────────────────────────────────────────
+const DEFAULT_ARTWORKS = [
+  { id: 1, title: 'Vague Océanique', category: 'acrylique', price: 450, dimensions: '60×80 cm', description: "Une œuvre captivante où l'acrylique danse sur la résine époxy translucide. Les vagues semblent vivantes, figées dans un mouvement éternel.", sold: false, emoji: '🌊', gradient: 'linear-gradient(135deg,#1a6b9a,#0d2d5e,#2a9d8f)' },
+  { id: 2, title: 'Cosmos Intérieur', category: 'personnelles', price: 680, dimensions: '80×100 cm', description: "Voyage introspectif à travers les galaxies intérieures. Pigments métalliques et inclusions de feuilles d'or sur résine profonde.", sold: false, emoji: '🌌', gradient: 'linear-gradient(135deg,#1a0533,#3d1458,#6b21a8)' },
+  { id: 3, title: 'Portrait de Marie', category: 'portrait', price: 820, dimensions: '50×70 cm', description: "Portrait réaliste exécuté avec une précision remarquable, sublimé par une finition époxy haute brillance qui donne vie aux émotions.", sold: true, emoji: '👩‍🎨', gradient: 'linear-gradient(135deg,#3d1c1c,#7c3030,#a85050)' },
+  { id: 4, title: 'Souvenir Éternel', category: 'photo', price: 550, dimensions: '40×60 cm', description: "Transformation poétique d'une photographie familiale en tableau époxy. La résine crée une profondeur 3D saisissante.", sold: false, emoji: '📸', gradient: 'linear-gradient(135deg,#2d1b00,#7c5200,#c9a84c)' },
+  { id: 5, title: 'Forêt Enchantée', category: 'acrylique', price: 520, dimensions: '70×90 cm', description: "Sous-bois mystérieux où lumière et ombres jouent à travers les couches de résine translucide.", sold: false, emoji: '🌲', gradient: 'linear-gradient(135deg,#0a2e0a,#1a5c1a,#2d8c2d)' },
+  { id: 6, title: 'Abstraction Dorée', category: 'personnelles', price: 390, dimensions: '50×50 cm', description: "Composition géométrique abstraite avec feuilles d'or réelles incrustées dans la résine.", sold: false, emoji: '✨', gradient: 'linear-gradient(135deg,#2a1a00,#8c6200,#c9a84c)' },
+  { id: 7, title: "Coucher sur l'Atlas", category: 'photo', price: 620, dimensions: '60×80 cm', description: "Photographie montagnarde transcendée par les couches de résine créant un effet de profondeur exceptionnel.", sold: true, emoji: '🏔️', gradient: 'linear-gradient(135deg,#1a1a2e,#16213e,#e94560)' },
+  { id: 8, title: 'Méditerranée', category: 'acrylique', price: 490, dimensions: '80×60 cm', description: "Les bleus méditerranéens capturés dans la résine. Un tableau qui respire la mer et le soleil.", sold: false, emoji: '⛵', gradient: 'linear-gradient(135deg,#003366,#0066cc,#66b3ff)' },
+];
+
+const DEFAULT_RESERVATIONS = [
+  { id: 1, name: 'Sophie Martin', email: 'sophie@mail.com', phone: '06 12 34 56 78', type: 'portrait', description: 'Portrait de famille – 4 personnes, style réaliste', budget: '800–1200€', date: '2024-12-15', status: 'pending' },
+  { id: 2, name: 'Pierre Dubois', email: 'pierre@mail.com', phone: '07 23 45 67 89', type: 'photo', description: 'Photo de mariage transformée en tableau époxy', budget: '600–800€', date: '2024-12-18', status: 'confirmed' },
+  { id: 3, name: 'Léa Bernard', email: 'lea@mail.com', phone: '06 34 56 78 90', type: 'personnelles', description: 'Création abstraite avec couleurs marine et or', budget: '400–600€', date: '2024-12-20', status: 'done' },
+];
+
+// ─── LOAD FROM LOCALSTORAGE (admin syncs data here) ──────────────────
+function loadFromStorage() {
+  try {
+    const a = localStorage.getItem('dan_artworks');
+    const r = localStorage.getItem('dan_reservations');
+    const sc = localStorage.getItem('dan_siteConfig');
+    if (a) artworks = JSON.parse(a);
+    if (r) reservations = JSON.parse(r);
+    if (sc) Object.assign(siteConfig, JSON.parse(sc));
+  } catch(e) { console.warn('localStorage load error', e); }
+}
+
+// listen for changes from admin panel (same browser, different tab)
+window.addEventListener('storage', (e) => {
+  if (e.key === 'dan_artworks' && e.newValue) { artworks = JSON.parse(e.newValue); if(currentPage==='home'||currentPage==='gallery') renderPage(currentPage); }
+  if (e.key === 'dan_siteConfig' && e.newValue) { Object.assign(siteConfig, JSON.parse(e.newValue)); applyColors(); if(currentPage==='home') renderHome(); }
+});
+
+// ─── DATA ────────────────────────────────────────────────────────────
+let artworks = [...DEFAULT_ARTWORKS];
+let reservations = [...DEFAULT_RESERVATIONS];
+
+const CATEGORIES = [
+  { key: 'all', label: 'Toutes les œuvres', icon: '🎨' },
+  { key: 'acrylique', label: 'Acrylique sur Époxy', icon: '🌊' },
+  { key: 'personnelles', label: 'Créations Personnelles', icon: '✨' },
+  { key: 'portrait', label: 'Portrait Artistique', icon: '👤' },
+  { key: 'photo', label: 'Tableau Photo', icon: '📸' },
+];
+
+const CATEGORY_INFO = {
+  acrylique: { icon: '🌊', gradient: 'linear-gradient(135deg,#003366 0%,#1a6b9a 50%,#2a9d8f 100%)', count: 3, desc: 'Peintures fluides sur résine époxy' },
+  personnelles: { icon: '✨', gradient: 'linear-gradient(135deg,#1a0533 0%,#6b21a8 50%,#c9a84c 100%)', count: 2, desc: 'Œuvres originales et uniques' },
+  portrait: { icon: '👤', gradient: 'linear-gradient(135deg,#2d1b00 0%,#7c3030 50%,#a85050 100%)', count: 1, desc: 'Portraits réalistes haute définition' },
+  photo: { icon: '📸', gradient: 'linear-gradient(135deg,#2d1b00 0%,#7c5200 50%,#c9a84c 100%)', count: 2, desc: 'Vos photos en tableaux époxy' },
+};
+
+// ─── STATE ──────────────────────────────────────────────────────────
+let cart = [];
+let currentPage = 'home';
+let galleryFilter = 'all';
+let selectedArtwork = null;
+let menuOpen = false;
+let confirmationOrder = null;
+let toastIdCounter = 0;
+
+// ─── UTILS ──────────────────────────────────────────────────────────
+function fmt(n) { return n.toLocaleString('fr-FR') + ' €'; }
+function getCategoryLabel(key) { return (CATEGORIES.find(c => c.key === key) || {}).label || key; }
+
+// ─── NAVIGATION ─────────────────────────────────────────────────────
+function go(page) {
+  currentPage = page;
+  menuOpen = false;
+  updateMenu();
+  document.querySelectorAll('[id^="page-"]').forEach(el => el.classList.add('hidden'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.remove('hidden');
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.classList.toggle('active', l.dataset.page === page);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  renderPage(page);
+}
+
+function renderPage(page) {
+  if (page === 'home') renderHome();
+  else if (page === 'gallery') renderGallery();
+  else if (page === 'cart') renderCart();
+  else if (page === 'checkout') renderCheckout();
+}
+
+function toggleMenu() {
+  menuOpen = !menuOpen;
+  updateMenu();
+}
+
+function updateMenu() {
+  const links = document.getElementById('navLinks');
+  const h1 = document.getElementById('ham1');
+  const h2 = document.getElementById('ham2');
+  const h3 = document.getElementById('ham3');
+  links.classList.toggle('open', menuOpen);
+  h1.style.transform = menuOpen ? 'rotate(45deg) translate(5px,5px)' : '';
+  h2.style.opacity = menuOpen ? '0' : '1';
+  h3.style.transform = menuOpen ? 'rotate(-45deg) translate(5px,-5px)' : '';
+}
+
+// ─── TOAST ──────────────────────────────────────────────────────────
+function toast(msg, type = 'info') {
+  const id = ++toastIdCounter;
+  const container = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+  t.innerHTML = `<span>${icon}</span>${msg}`;
+  container.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+// ─── CART ───────────────────────────────────────────────────────────
+function addToCart(artwork) {
+  if (artwork.sold) return;
+  if (cart.find(i => i.id === artwork.id)) { toast('Déjà dans le panier', 'info'); return; }
+  cart.push({ ...artwork });
+  toast('Ajouté au panier 🛒', 'success');
+  updateCartBadge();
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(i => i.id !== id);
+  toast('Retiré du panier', 'info');
+  updateCartBadge();
+  renderCart();
+}
+
+function updateCartBadge() {
+  const badge = document.getElementById('cartBadge');
+  if (cart.length > 0) {
+    badge.textContent = cart.length;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
+function cartTotal() { return cart.reduce((s, i) => s + i.price, 0); }
+
+
+// ─── GALLERY ─────────────────────────────────────────────────────────
+function renderGallery() {
+  // Filters
+  const filtersEl = document.getElementById('galleryFilters');
+  filtersEl.innerHTML = CATEGORIES.map(c => `
+    <button class="filter-btn${galleryFilter === c.key ? ' active' : ''}" onclick="setFilter('${c.key}')">
+      ${c.icon} ${c.label}
+    </button>
+  `).join('');
+
+  const filtered = galleryFilter === 'all' ? artworks : artworks.filter(a => a.category === galleryFilter);
+  document.getElementById('galleryCount').textContent = `${filtered.length} œuvre${filtered.length > 1 ? 's' : ''}`;
+  const emptyEl = document.getElementById('galleryEmpty');
+  const gridEl = document.getElementById('galleryGrid');
+  if (filtered.length === 0) {
+    emptyEl.classList.remove('hidden');
+    gridEl.innerHTML = '';
+  } else {
+    emptyEl.classList.add('hidden');
+    gridEl.innerHTML = filtered.map(a => artworkCardHTML(a)).join('');
+  }
+}
+
+function setFilter(key) {
+  galleryFilter = key;
+  renderGallery();
+}
+
+// ─── ARTWORK CARD ─────────────────────────────────────────────────────
+function artworkCardHTML(a) {
+  const stripeMode = localStorage.getItem('dan_stripe_mode') || 'links';
+  const hasStripe = a.stripeLink || stripeMode === 'auto';
+  const thumbContent = a.photo
+    ? `<img src="${a.photo}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />`
+    : a.emoji;
+  return `
+    <div class="artwork-card" onclick="openModal(${a.id})">
+      <div class="artwork-img-wrap">
+        <div class="artwork-thumb" style="background:${a.gradient};position:relative">${thumbContent}</div>
+        ${a.sold ? '<div class="artwork-sold-badge">Vendu</div>' : ''}
+        <div class="artwork-overlay">
+          <div class="artwork-overlay-btns" onclick="event.stopPropagation()">
+            <button class="btn btn-glass btn-sm" onclick="openModal(${a.id})">Détails</button>
+            ${!a.sold && hasStripe ? `<button class="btn btn-primary btn-sm" onclick="buyNow(artworks.find(x=>x.id===${a.id}))">💳 Acheter</button>` : ''}
+            ${!a.sold && !hasStripe ? `<button class="btn btn-primary btn-sm" onclick="addToCart(artworks.find(x=>x.id===${a.id}))">+ Panier</button>` : ''}
+          </div>
+        </div>
+      </div>
+      <div class="artwork-info">
+        <div class="artwork-category">${getCategoryLabel(a.category)}</div>
+        <div class="artwork-title">${a.title}</div>
+        <div class="artwork-dims">${a.dimensions}</div>
+        <div class="artwork-footer">
+          ${a.sold ? '<div class="artwork-price sold">Vendu</div>' : `<div class="artwork-price">${fmt(a.price)}</div>`}
+          ${!a.sold && hasStripe ? '<span style="font-size:10px;color:var(--green);letter-spacing:.5px">💳 Paiement sécurisé</span>' : ''}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function buyNow(a) {
+  if (!a || a.sold) return;
+  const stripeMode = localStorage.getItem('dan_stripe_mode') || 'links';
+  if (a.stripeLink) {
+    window.open(a.stripeLink, '_blank');
+  } else if (stripeMode === 'auto') {
+    // Fallback to cart if auto mode not yet configured server-side
+    addToCart(a);
+    toast('Ajouté au panier — paiement Stripe à la commande', 'info');
+  }
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────────
+function openModal(id) {
+  const a = artworks.find(x => x.id === id);
+  if (!a) return;
+  selectedArtwork = a;
+  const inCart = cart.some(i => i.id === a.id);
+  const stripeMode = localStorage.getItem('dan_stripe_mode') || 'links';
+  const hasStripe = a.stripeLink || stripeMode === 'auto';
+
+  // Thumb — show photo if available
+  const thumbEl = document.getElementById('modalThumb');
+  thumbEl.style.background = a.gradient;
+  if (a.photo) {
+    thumbEl.innerHTML = `<img src="${a.photo}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />`;
+    thumbEl.style.position = 'relative';
+  } else {
+    thumbEl.innerHTML = '';
+    thumbEl.textContent = a.emoji;
+  }
+
+  document.getElementById('modalCategory').textContent = getCategoryLabel(a.category);
+  document.getElementById('modalTitle').textContent = a.title;
+  document.getElementById('modalDims').textContent = '📐 ' + a.dimensions + ' · Résine époxy et acrylique';
+  document.getElementById('modalDesc').textContent = a.description;
+  const priceEl = document.getElementById('modalPrice');
+  priceEl.className = 'modal-price' + (a.sold ? ' sold' : '');
+  priceEl.textContent = a.sold ? '🔴 Œuvre vendue' : fmt(a.price);
+
+  const actionsEl = document.getElementById('modalActions');
+  actionsEl.innerHTML = '';
+  if (!a.sold) {
+    if (hasStripe && a.stripeLink) {
+      // Primary: Stripe direct payment
+      const btnBuy = document.createElement('a');
+      btnBuy.className = 'btn btn-primary';
+      btnBuy.href = a.stripeLink;
+      btnBuy.target = '_blank';
+      btnBuy.innerHTML = '💳 Acheter maintenant — ' + fmt(a.price);
+      btnBuy.style.textDecoration = 'none';
+      actionsEl.appendChild(btnBuy);
+      // Secondary: add to cart
+      const btnCart = document.createElement('button');
+      btnCart.className = 'btn btn-glass';
+      btnCart.textContent = inCart ? '✓ Dans le panier' : '🛒 Ajouter au panier';
+      btnCart.disabled = inCart;
+      if (!inCart) btnCart.onclick = () => { addToCart(a); closeModal(); };
+      actionsEl.appendChild(btnCart);
+    } else {
+      if (inCart) {
+        actionsEl.innerHTML = '<button class="btn btn-glass" disabled style="opacity:0.6">✓ Dans le panier</button>';
+      } else {
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-primary';
+        btn.textContent = '🛒 Ajouter au panier';
+        btn.onclick = () => { addToCart(a); closeModal(); };
+        actionsEl.appendChild(btn);
+      }
+    }
+  }
+  document.getElementById('artworkModal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('artworkModal')) return;
+  document.getElementById('artworkModal').classList.add('hidden');
+  document.body.style.overflow = '';
+  selectedArtwork = null;
+}
+
+// ─── CART PAGE ───────────────────────────────────────────────────────
+function renderCart() {
+  const label = document.getElementById('cartCountLabel');
+  label.textContent = `${cart.length} article${cart.length > 1 ? 's' : ''}`;
+  if (cart.length === 0) {
+    document.getElementById('cartEmpty').classList.remove('hidden');
+    document.getElementById('cartContent').classList.add('hidden');
+  } else {
+    document.getElementById('cartEmpty').classList.add('hidden');
+    document.getElementById('cartContent').classList.remove('hidden');
+    document.getElementById('cartItems').innerHTML = cart.map(item => `
+      <div class="cart-item">
+        <div class="cart-item-thumb" style="background:${item.gradient}">${item.emoji}</div>
+        <div>
+          <div class="cart-item-title">${item.title}</div>
+          <div class="cart-item-cat">${getCategoryLabel(item.category)}</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px">${item.dimensions}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+          <div class="cart-item-price">${fmt(item.price)}</div>
+          <button class="cart-remove" onclick="removeFromCart(${item.id})" title="Retirer">🗑</button>
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('cartSummaryRows').innerHTML = cart.map(i => `
+      <div class="summary-row"><span style="color:var(--text);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.title}</span><span>${fmt(i.price)}</span></div>
+    `).join('');
+    document.getElementById('cartTotal').textContent = fmt(cartTotal());
+  }
+}
+
+// ─── CHECKOUT ────────────────────────────────────────────────────────
+function renderCheckout() {
+  if (cart.length === 0) { go('cart'); return; }
+  document.getElementById('checkoutSummaryRows').innerHTML = cart.map(i => `
+    <div class="summary-row"><span style="color:var(--text)">${i.title}</span><span>${fmt(i.price)}</span></div>
+  `).join('');
+  const total = cartTotal();
+  document.getElementById('checkoutTotal').textContent = fmt(total);
+  document.getElementById('checkoutBtn').textContent = `✓ Confirmer · ${fmt(total)}`;
+}
+
+function formatCard(input) {
+  input.value = input.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim().slice(0, 19);
+}
+
+function submitCheckout() {
+  const firstName = document.getElementById('ck-firstName').value;
+  const lastName  = document.getElementById('ck-lastName').value;
+  const email     = document.getElementById('ck-email').value;
+  const phone     = document.getElementById('ck-phone').value;
+  const address   = document.getElementById('ck-address').value;
+  const city      = document.getElementById('ck-city').value;
+  const zip       = document.getElementById('ck-zip').value;
+  const notes     = document.getElementById('ck-notes').value;
+  const cardNum   = document.getElementById('ck-cardNum').value;
+  if (!firstName || !email || !address || !cardNum) { toast('Veuillez remplir tous les champs obligatoires', 'error'); return; }
+  const btn = document.getElementById('checkoutBtn');
+  btn.textContent = '⏳ Traitement...';
+  btn.disabled = true;
+  setTimeout(() => {
+    const ref = 'DA-' + Date.now().toString(36).toUpperCase();
+    const today = new Date().toISOString().slice(0,10);
+    const fullName = [firstName, lastName].filter(Boolean).join(' ');
+    const fullAddress = [address, zip, city].filter(Boolean).join(', ');
+    const newOrder = {
+      id: ref,
+      date: today,
+      status: 'pending',
+      customer: { name: fullName, email, phone: phone||'', address: fullAddress },
+      items: cart.map(i => ({ title:i.title, price:i.price, emoji:i.emoji, gradient:i.gradient })),
+      total: cartTotal(),
+      notes: notes || '',
+    };
+    // Save order to localStorage for admin
+    try {
+      const stored = JSON.parse(localStorage.getItem('dan_orders')) || [];
+      stored.unshift(newOrder);
+      localStorage.setItem('dan_orders', JSON.stringify(stored));
+    } catch(e) {}
+    // Auto-register client
+    registerClientFromContact({ name: fullName, email, phone, date: today });
+    confirmationOrder = { items: [...cart], total: cartTotal(), ref };
+    cart = [];
+    updateCartBadge();
+    btn.disabled = false;
+    go('confirmation');
+  }, 1500);
+}
+
+// ─── CONFIRMATION ────────────────────────────────────────────────────
+function renderConfirmation() {
+  if (!confirmationOrder) { go('home'); return; }
+  const o = confirmationOrder;
+  let html = `<div class="conf-row"><span class="conf-label">Référence</span><span style="color:var(--gold);font-weight:600">${o.ref}</span></div>`;
+  o.items.forEach(i => {
+    html += `<div class="conf-row"><span class="conf-label">${i.title}</span><span>${fmt(i.price)}</span></div>`;
+  });
+  html += `<div class="conf-row"><span class="conf-label">Livraison estimée</span><span>3–5 semaines</span></div>`;
+  html += `<div class="conf-row"><span>Total payé</span><span>${fmt(o.total)}</span></div>`;
+  document.getElementById('confirmationDetails').innerHTML = html;
+}
+
+// ─── RESERVATION ─────────────────────────────────────────────────────
+function checkPhotoNotice() {
+  const type = document.getElementById('res-type').value;
+  document.getElementById('photoNotice').classList.toggle('hidden', type !== 'photo');
+}
+
+async function submitReservation() {
+  const name = document.getElementById('res-name').value;
+  const email = document.getElementById('res-email').value;
+  const desc = document.getElementById('res-desc').value;
+  if (!name || !email || !desc) { toast('Remplissez les champs requis', 'error'); return; }
+  const btn = document.getElementById('resBtn');
+  btn.textContent = '⏳ Envoi en cours...';
+  btn.disabled = true;
+  await new Promise(r => setTimeout(r, 1200));
+  const type = document.getElementById('res-type').value;
+  const budget = document.getElementById('res-budget').value;
+  const phone = document.getElementById('res-phone').value;
+  const newRes = {
+    id: Date.now(), name, email, phone, type,
+    description: desc, budget,
+    date: new Date().toISOString().slice(0, 10), status: 'pending'
+  };
+  reservations.push(newRes);
+  // Persist to localStorage so admin sees it immediately
+  try { localStorage.setItem('dan_reservations', JSON.stringify(reservations)); } catch(e) {}
+  // Auto-register client
+  registerClientFromContact({ name, email, phone, date: newRes.date });
+  // Show success
+  document.getElementById('resForm').classList.add('hidden');
+  document.getElementById('resSuccess').classList.remove('hidden');
+  const details = document.getElementById('resDetails');
+  details.innerHTML = `
+    <div class="conf-row"><span class="conf-label">Nom</span><span>${name}</span></div>
+    <div class="conf-row"><span class="conf-label">Email</span><span>${email}</span></div>
+    <div class="conf-row"><span class="conf-label">Type</span><span>${getCategoryLabel(type)}</span></div>
+    <div class="conf-row"><span class="conf-label">Budget</span><span>${budget || 'À définir'}</span></div>
+  `;
+}
+
+// Auto-register client in localStorage (admin will pick it up via syncClientsFromData)
+function registerClientFromContact({ name, email, phone, date }) {
+  try {
+    let clients = JSON.parse(localStorage.getItem('dan_clients')) || [];
+    const exists = clients.find(c => c.email === email);
+    if (!exists) {
+      clients.push({
+        id: 'c_' + email.replace(/[^a-z0-9]/gi,'_'),
+        name, email, phone: phone||'', address:'',
+        firstSeen: date, notes:[], tags:[],
+      });
+      localStorage.setItem('dan_clients', JSON.stringify(clients));
+    }
+  } catch(e) {}
+}
+
+
+// ─── SITE CONFIG (éditable depuis l'admin) ───────────────────────────
+let siteConfig = {
+  hero: {
+    badge: 'Artiste peintre · Résine époxy',
+    title: 'Dan Atelier 3D',
+    subtitle: "L'art en profondeur",
+    desc: "Peintures uniques sur résine époxy alliant techniques acryliques, portraits réalistes et créations sur mesure d'après vos photos.",
+    btn1: '✦ Explorer la Galerie',
+    btn2: 'Commande sur mesure',
+  },
+  about: {
+    label: "L'artiste",
+    title: 'Passion pour la résine époxy',
+    p1: "Artiste autodidacte, Dan crée des œuvres uniques alliant la fluidité de la peinture acrylique à la profondeur envoûtante de la résine époxy.",
+    p2: "Chaque tableau est une invitation au voyage – dans les profondeurs marines, les galaxies lointaines, ou dans vos plus beaux souvenirs photographiques.",
+    quote: "Chaque goutte de résine est une fenêtre vers un autre monde.",
+    stat1num: '+120', stat1lbl: 'Œuvres créées',
+    stat2num: '+80',  stat2lbl: 'Clients satisfaits',
+    stat3num: '5★',  stat3lbl: 'Avis clients',
+    btnLabel: 'Commander une œuvre →',
+    photo: null,
+  },
+  process: {
+    label: 'Processus',
+    title: 'Comment ça marche ?',
+    steps: [
+      { icon: '💬', num: '01', title: 'Consultation', desc: 'Échange sur votre projet, vos souhaits et votre budget.' },
+      { icon: '🎨', num: '02', title: 'Création', desc: 'Dan réalise votre tableau avec passion et précision.' },
+      { icon: '✨', num: '03', title: 'Finition Époxy', desc: 'Application de la résine pour un fini brillant 3D unique.' },
+      { icon: '🚚', num: '04', title: 'Livraison', desc: 'Livraison soignée ou retrait en atelier.' },
+    ]
+  },
+  testimonials: {
+    label: 'Avis clients',
+    title: "Ce qu'ils disent",
+    items: [
+      { name: 'Marie L.', date: 'Novembre 2024', text: "Mon portrait est absolument magnifique ! Dan a su capturer chaque détail avec une précision et une sensibilité remarquables." },
+      { name: 'Thomas R.', date: 'Octobre 2024', text: "La transformation de notre photo de mariage en tableau époxy est époustouflante. Un souvenir pour l'éternité." },
+      { name: 'Isabelle M.', date: 'Septembre 2024', text: "L'œuvre abstraite que j'ai commandée dépasse toutes mes espérances. La profondeur de la résine est fascinante." },
+    ]
+  },
+  cta: {
+    label: 'Prêt à commencer ?',
+    title: 'Votre tableau unique vous attend',
+    desc: "Commandez une création personnalisée ou choisissez parmi nos œuvres disponibles.",
+    btn1: 'Voir la galerie',
+    btn2: 'Réserver une création',
+  },
+  colors: {
+    gold: '#c9a84c',
+    bg: '#060608',
+    text: '#f0ede8',
+    green: '#52c284',
+    red: '#e05252',
+  },
+  sections: {
+    showHero: true,
+    showCategories: true,
+    showFeatured: true,
+    showAbout: true,
+    showProcess: true,
+    showTestimonials: true,
+    showCta: true,
+  }
+};
+
+// ── HOME RENDERER (driven by siteConfig) ──
+function renderHome() {
+  const c = siteConfig;
+  const sc = c.sections;
+  const featured = artworks.filter(a => !a.sold).slice(0, 3);
+
+  let html = '';
+
+  // HERO
+  if (sc.showHero) html += `
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+      <div class="hero-content">
+        <div class="hero-badge">${c.hero.badge}</div>
+        <h1 class="hero-title">${c.hero.title}</h1>
+        <p class="hero-subtitle">${c.hero.subtitle}</p>
+        <p class="hero-desc">${c.hero.desc}</p>
+        <div class="hero-buttons">
+          <button class="btn btn-primary btn-lg" onclick="go('gallery')">${c.hero.btn1}</button>
+          <button class="btn btn-glass btn-lg" onclick="go('reservation')">${c.hero.btn2}</button>
+        </div>
+      </div>
+    </section>`;
+
+  // CATEGORIES
+  if (sc.showCategories) html += `
+    <section class="section">
+      <div class="section-header">
+        <p class="section-label">Collections</p>
+        <h2 class="section-title">Nos <em>catégories</em></h2>
+        <div class="divider"></div>
+        <p class="section-desc">Quatre univers artistiques uniques, chacun explorant les possibilités infinies de la résine époxy.</p>
+      </div>
+      <div class="categories-grid" id="categoriesGrid"></div>
+    </section>`;
+
+  // FEATURED
+  if (sc.showFeatured) html += `
+    <section class="section" style="padding-top:0">
+      <div class="section-header">
+        <p class="section-label">Sélection</p>
+        <h2 class="section-title">Œuvres <em>en vedette</em></h2>
+        <div class="divider"></div>
+      </div>
+      <div class="artworks-grid" id="featuredGrid"></div>
+      <div style="text-align:center;margin-top:40px">
+        <button class="btn btn-glass btn-lg" onclick="go('gallery')">Voir toute la galerie →</button>
+      </div>
+    </section>`;
+
+  // ABOUT
+  if (sc.showAbout) {
+    const ab = c.about;
+    const photoHtml = ab.photo
+      ? `<img src="${ab.photo}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" />`
+      : `<div class="about-img-placeholder">🎨</div>`;
+    html += `
+    <section class="section" style="padding-top:0">
+      <div class="about-grid">
+        <div class="about-text">
+          <p class="section-label">${ab.label}</p>
+          <h2>Passion pour la <em style="color:var(--gold);font-style:italic">résine époxy</em></h2>
+          <div class="divider" style="margin:16px 0"></div>
+          <p>${ab.p1}</p>
+          <p>${ab.p2}</p>
+          <div class="about-stats">
+            <div><div class="about-stat-num">${ab.stat1num}</div><div class="about-stat-label">${ab.stat1lbl}</div></div>
+            <div><div class="about-stat-num">${ab.stat2num}</div><div class="about-stat-label">${ab.stat2lbl}</div></div>
+            <div><div class="about-stat-num">${ab.stat3num}</div><div class="about-stat-label">${ab.stat3lbl}</div></div>
+          </div>
+          <div style="margin-top:32px">
+            <button class="btn btn-outline" onclick="go('reservation')">${ab.btnLabel}</button>
+          </div>
+        </div>
+        <div class="about-img-wrap" style="position:relative">
+          ${photoHtml}
+          <div style="position:absolute;bottom:20px;left:20px;right:20px;z-index:1">
+            <div class="glass" style="padding:16px 20px">
+              <div style="font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--text-muted);line-height:1.5">"${ab.quote}"</div>
+              <div style="font-size:12px;color:var(--gold);margin-top:8px;font-weight:500">— Dan, Artiste</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  }
+
+  // PROCESS
+  if (sc.showProcess) {
+    const pr = c.process;
+    html += `
+    <section class="section" style="padding-top:0">
+      <div class="section-header">
+        <p class="section-label">${pr.label}</p>
+        <h2 class="section-title">${pr.title.replace(' ?', ' <em>?</em>')}</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="process-grid">
+        ${pr.steps.map(s => `
+          <div class="process-card">
+            <div class="process-icon">${s.icon}</div>
+            <div class="process-num">Étape ${s.num}</div>
+            <div class="process-title">${s.title}</div>
+            <div class="process-desc">${s.desc}</div>
+          </div>`).join('')}
+      </div>
+    </section>`;
+  }
+
+  // TESTIMONIALS
+  if (sc.showTestimonials) {
+    const te = c.testimonials;
+    html += `
+    <section class="section" style="padding-top:0">
+      <div class="section-header">
+        <p class="section-label">${te.label}</p>
+        <h2 class="section-title">${te.title.replace('disent', '<em>disent</em>')}</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="testimonials-grid">
+        ${te.items.map(t => `
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-text">"${t.text}"</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">${t.name.charAt(0)}</div>
+              <div><div class="testimonial-name">${t.name}</div><div class="testimonial-date">${t.date}</div></div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </section>`;
+  }
+
+  // CTA
+  if (sc.showCta) {
+    const ct = c.cta;
+    html += `
+    <section class="section" style="padding-top:0">
+      <div class="glass" style="padding:60px 40px;text-align:center;border-radius:var(--radius-lg);position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(201,168,76,0.08) 0%,transparent 70%);pointer-events:none"></div>
+        <p class="section-label">${ct.label}</p>
+        <h2 class="section-title" style="margin-bottom:12px">${ct.title.replace('unique', '<em>unique</em>')}</h2>
+        <p class="section-desc" style="margin-bottom:36px">${ct.desc}</p>
+        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-primary btn-lg" onclick="go('gallery')">${ct.btn1}</button>
+          <button class="btn btn-glass btn-lg" onclick="go('reservation')">${ct.btn2}</button>
+        </div>
+      </div>
+    </section>`;
+  }
+
+  document.getElementById('page-home').innerHTML = html;
+
+  // Render sub-parts
+  if (sc.showCategories) renderCategories();
+  if (sc.showFeatured) document.getElementById('featuredGrid').innerHTML = featured.map(a => artworkCardHTML(a)).join('');
+}
+
+// Apply colors from siteConfig
+function applyColors() {
+  const c = siteConfig.colors;
+  const root = document.documentElement.style;
+  root.setProperty('--gold', c.gold);
+  root.setProperty('--bg', c.bg);
+  root.setProperty('--text', c.text);
+  root.setProperty('--green', c.green);
+  root.setProperty('--red', c.red);
+  // gold-glow derived from gold
+  const hex = c.gold.replace('#','');
+  const r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16);
+  root.setProperty('--gold-glow', `rgba(${r},${g},${b},0.25)`);
+  root.setProperty('--gold2', c.gold);
+}
+
+// ── CONTENT SECTION EDITOR ──
+let currentContentSection = 'hero';
+
+function showContentSection(sec) {
+  currentContentSection = sec;
+  document.querySelectorAll('[id^="csec-"]').forEach(b => b.classList.remove('active'));
+  document.getElementById('csec-' + sec)?.classList.add('active');
+  renderContentEditor(sec);
+}
+
+function renderContentEditor(sec) {
+  const ed = document.getElementById('contentEditor');
+  if (!ed) return;
+  const c = siteConfig;
+
+  const wrap = (inner) => `
+    <div class="add-form" style="max-width:900px">
+      ${inner}
+      <div style="display:flex;gap:12px;margin-top:28px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="saveContent('${sec}')">✓ Enregistrer et appliquer</button>
+        <button class="btn btn-glass" onclick="previewContent()">👁 Aperçu</button>
+      </div>
+    </div>`;
+
+  const field = (id, label, val, type='text', hint='') => `
+    <div class="form-group${type==='textarea'?'  full':''}">
+      <label class="form-label">${label}${hint?` <span style="font-size:11px;color:var(--text-muted);font-weight:400">${hint}</span>`:''}</label>
+      ${type==='textarea'
+        ? `<textarea class="form-textarea" id="ce-${id}" rows="3">${val}</textarea>`
+        : `<input class="form-input" type="${type}" id="ce-${id}" value="${val.replace(/"/g,'&quot;')}" />`
+      }
+    </div>`;
+
+  const toggle = (id, label, val) => `
+    <div class="form-group" style="flex-direction:row;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--glass-border)">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;flex:1">
+        <input type="checkbox" id="ce-${id}" ${val?'checked':''} style="width:18px;height:18px;accent-color:var(--gold);cursor:pointer" />
+        <span style="font-size:14px;color:var(--text)">${label}</span>
+      </label>
+    </div>`;
+
+  if (sec === 'hero') {
+    ed.innerHTML = wrap(`
+      <div class="form-section-title" style="margin-bottom:24px">🏠 Section Hero (bannière principale)</div>
+      <div class="form-grid">
+        ${field('hero-badge','Badge au-dessus du titre',c.hero.badge)}
+        ${field('hero-title','Titre principal',c.hero.title)}
+        ${field('hero-subtitle','Sous-titre (italique doré)',c.hero.subtitle)}
+        <div class="form-group full">${field('hero-desc','Description','','textarea').replace('<div class="form-group full">','').replace('</div>','')}</div>
+        ${field('hero-btn1','Texte bouton principal',c.hero.btn1)}
+        ${field('hero-btn2','Texte bouton secondaire',c.hero.btn2)}
+      </div>`);
+    document.getElementById('ce-hero-desc').value = c.hero.desc;
+  }
+
+  else if (sec === 'about') {
+    const ab = c.about;
+    ed.innerHTML = wrap(`
+      <div class="form-section-title" style="margin-bottom:24px">👤 Section À propos</div>
+      <div class="form-grid">
+        ${field('about-label','Label (petit texte doré)',ab.label)}
+        ${field('about-title','Titre',ab.title)}
+        <div class="form-group full"><label class="form-label">Paragraphe 1</label><textarea class="form-textarea" id="ce-about-p1" rows="3">${ab.p1}</textarea></div>
+        <div class="form-group full"><label class="form-label">Paragraphe 2</label><textarea class="form-textarea" id="ce-about-p2" rows="3">${ab.p2}</textarea></div>
+        ${field('about-quote','Citation en bas',ab.quote)}
+        ${field('about-stat1num','Stat 1 — Nombre',ab.stat1num)}
+        ${field('about-stat1lbl','Stat 1 — Label',ab.stat1lbl)}
+        ${field('about-stat2num','Stat 2 — Nombre',ab.stat2num)}
+        ${field('about-stat2lbl','Stat 2 — Label',ab.stat2lbl)}
+        ${field('about-stat3num','Stat 3 — Nombre',ab.stat3num)}
+        ${field('about-stat3lbl','Stat 3 — Label',ab.stat3lbl)}
+        ${field('about-btn','Texte du bouton',ab.btnLabel)}
+        <div class="form-group full">
+          <label class="form-label">Photo de l'artiste</label>
+          <div class="img-upload-zone">
+            <input type="file" id="ce-about-photo" accept="image/*" onchange="handleAboutPhoto(event)" />
+            <div class="img-upload-icon">📷</div>
+            <div class="img-upload-label">Ajouter une photo (ou laisser vide pour l'emoji 🎨)</div>
+          </div>
+          ${ab.photo?`<div style="margin-top:12px"><img src="${ab.photo}" style="width:120px;height:100px;object-fit:cover;border-radius:10px;border:2px solid var(--gold)" /></div>`:''}
+        </div>
+      </div>`);
+  }
+
+  else if (sec === 'process') {
+    const pr = c.process;
+    ed.innerHTML = wrap(`
+      <div class="form-section-title" style="margin-bottom:24px">⚙ Section Processus</div>
+      <div class="form-grid">
+        ${field('process-label','Label',pr.label)}
+        ${field('process-title','Titre',pr.title)}
+      </div>
+      <div style="margin-top:24px;display:flex;flex-direction:column;gap:16px">
+        ${pr.steps.map((s,i) => `
+          <div style="background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);border-radius:var(--radius);padding:20px">
+            <div style="font-size:12px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px">Étape ${i+1}</div>
+            <div class="form-grid">
+              <div class="form-group"><label class="form-label">Emoji</label><input class="form-input" id="ce-step${i}-icon" value="${s.icon}" style="font-size:20px" /></div>
+              <div class="form-group"><label class="form-label">Titre</label><input class="form-input" id="ce-step${i}-title" value="${s.title}" /></div>
+              <div class="form-group full"><label class="form-label">Description</label><textarea class="form-textarea" id="ce-step${i}-desc" rows="2">${s.desc}</textarea></div>
+            </div>
+          </div>`).join('')}
+      </div>`);
+  }
+
+  else if (sec === 'testimonials') {
+    const te = c.testimonials;
+    ed.innerHTML = wrap(`
+      <div class="form-section-title" style="margin-bottom:24px">⭐ Avis clients</div>
+      <div class="form-grid" style="margin-bottom:24px">
+        ${field('testi-label','Label',te.label)}
+        ${field('testi-title','Titre',te.title)}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        ${te.items.map((t,i) => `
+          <div style="background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);border-radius:var(--radius);padding:20px">
+            <div style="font-size:12px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px">Avis ${i+1}
+              <button class="btn btn-sm btn-danger" style="float:right;margin-top:-4px" onclick="removeTestimonial(${i})">🗑 Supprimer</button>
+            </div>
+            <div class="form-grid">
+              <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="ce-testi${i}-name" value="${t.name}" /></div>
+              <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="ce-testi${i}-date" value="${t.date}" /></div>
+              <div class="form-group full"><label class="form-label">Texte de l'avis</label><textarea class="form-textarea" id="ce-testi${i}-text" rows="3">${t.text}</textarea></div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <button class="btn btn-glass" style="margin-top:16px" onclick="addTestimonial()">+ Ajouter un avis</button>`);
+  }
+
+  else if (sec === 'cta') {
+    const ct = c.cta;
+    ed.innerHTML = wrap(`
+      <div class="form-section-title" style="margin-bottom:24px">📣 Bandeau d'appel à l'action</div>
+      <div class="form-grid">
+        ${field('cta-label','Label (petit)',ct.label)}
+        ${field('cta-title','Titre',ct.title)}
+        <div class="form-group full"><label class="form-label">Description</label><textarea class="form-textarea" id="ce-cta-desc" rows="2">${ct.desc}</textarea></div>
+        ${field('cta-btn1','Bouton principal',ct.btn1)}
+        ${field('cta-btn2','Bouton secondaire',ct.btn2)}
+      </div>`);
+  }
+
+  else if (sec === 'colors') {
+    const col = c.colors;
+    ed.innerHTML = wrap(`
+      <div class="form-section-title" style="margin-bottom:8px">🎨 Palette de couleurs</div>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:24px">Ces couleurs s'appliquent à l'ensemble du site instantanément.</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Couleur principale (or)</label>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input type="color" id="ce-color-gold" value="${col.gold}" style="width:48px;height:40px;border:none;background:none;cursor:pointer;border-radius:8px;padding:2px" oninput="liveColorPreview()" />
+            <input class="form-input" id="ce-color-gold-hex" value="${col.gold}" style="font-family:monospace" oninput="syncColorPicker('gold')" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Couleur de fond</label>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input type="color" id="ce-color-bg" value="${col.bg}" style="width:48px;height:40px;border:none;background:none;cursor:pointer;border-radius:8px;padding:2px" oninput="liveColorPreview()" />
+            <input class="form-input" id="ce-color-bg-hex" value="${col.bg}" style="font-family:monospace" oninput="syncColorPicker('bg')" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Couleur du texte</label>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input type="color" id="ce-color-text" value="${col.text}" style="width:48px;height:40px;border:none;background:none;cursor:pointer;border-radius:8px;padding:2px" oninput="liveColorPreview()" />
+            <input class="form-input" id="ce-color-text-hex" value="${col.text}" style="font-family:monospace" oninput="syncColorPicker('text')" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Couleur succès (vert)</label>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input type="color" id="ce-color-green" value="${col.green}" style="width:48px;height:40px;border:none;background:none;cursor:pointer;border-radius:8px;padding:2px" oninput="liveColorPreview()" />
+            <input class="form-input" id="ce-color-green-hex" value="${col.green}" style="font-family:monospace" oninput="syncColorPicker('green')" />
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:20px;padding:16px 20px;background:rgba(255,255,255,0.03);border-radius:var(--radius);border:1px solid var(--glass-border)">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Préréglages rapides :</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-sm btn-glass" onclick="applyPreset('gold')">✦ Or (défaut)</button>
+          <button class="btn btn-sm btn-glass" onclick="applyPreset('blue')">💙 Bleu marine</button>
+          <button class="btn btn-sm btn-glass" onclick="applyPreset('rose')">🌸 Rose poudré</button>
+          <button class="btn btn-sm btn-glass" onclick="applyPreset('emerald')">💚 Émeraude</button>
+          <button class="btn btn-sm btn-glass" onclick="applyPreset('silver')">🩶 Argent</button>
+        </div>
+      </div>`);
+  }
+
+  else if (sec === 'sections') {
+    const sc2 = c.sections;
+    ed.innerHTML = wrap(`
+      <div class="form-section-title" style="margin-bottom:8px">📐 Sections visibles sur l'accueil</div>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px">Activez ou désactivez chaque section de la page d'accueil.</p>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);border-radius:var(--radius);padding:8px 20px">
+        ${toggle('sec-hero','🏠 Bannière Hero (titre principal)',sc2.showHero)}
+        ${toggle('sec-categories','🗂 Grille des catégories',sc2.showCategories)}
+        ${toggle('sec-featured','⭐ Œuvres en vedette',sc2.showFeatured)}
+        ${toggle('sec-about','👤 Section À propos / L\'artiste',sc2.showAbout)}
+        ${toggle('sec-process','⚙ Processus (les 4 étapes)',sc2.showProcess)}
+        ${toggle('sec-testimonials','💬 Avis clients',sc2.showTestimonials)}
+        ${toggle('sec-cta','📣 Bandeau CTA final',sc2.showCta)}
+      </div>`);
+  }
+}
+
+function saveContent(sec) {
+  const c = siteConfig;
+  const v = id => document.getElementById('ce-'+id)?.value || '';
+  const ch = id => document.getElementById('ce-'+id)?.checked || false;
+
+  if (sec === 'hero') {
+    c.hero.badge   = v('hero-badge');
+    c.hero.title   = v('hero-title');
+    c.hero.subtitle= v('hero-subtitle');
+    c.hero.desc    = v('hero-desc');
+    c.hero.btn1    = v('hero-btn1');
+    c.hero.btn2    = v('hero-btn2');
+  }
+  else if (sec === 'about') {
+    const ab = c.about;
+    ab.label     = v('about-label');
+    ab.title     = v('about-title');
+    ab.p1        = v('about-p1');
+    ab.p2        = v('about-p2');
+    ab.quote     = v('about-quote');
+    ab.stat1num  = v('about-stat1num');
+    ab.stat1lbl  = v('about-stat1lbl');
+    ab.stat2num  = v('about-stat2num');
+    ab.stat2lbl  = v('about-stat2lbl');
+    ab.stat3num  = v('about-stat3num');
+    ab.stat3lbl  = v('about-stat3lbl');
+    ab.btnLabel  = v('about-btn');
+  }
+  else if (sec === 'process') {
+    c.process.label = v('process-label');
+    c.process.title = v('process-title');
+    c.process.steps = c.process.steps.map((s, i) => ({
+      ...s,
+      icon: v(`step${i}-icon`),
+      title: v(`step${i}-title`),
+      desc: v(`step${i}-desc`),
+    }));
+  }
+  else if (sec === 'testimonials') {
+    c.testimonials.label = v('testi-label');
+    c.testimonials.title = v('testi-title');
+    c.testimonials.items = c.testimonials.items.map((t, i) => ({
+      name: v(`testi${i}-name`),
+      date: v(`testi${i}-date`),
+      text: v(`testi${i}-text`),
+    }));
+  }
+  else if (sec === 'cta') {
+    c.cta.label = v('cta-label');
+    c.cta.title = v('cta-title');
+    c.cta.desc  = v('cta-desc');
+    c.cta.btn1  = v('cta-btn1');
+    c.cta.btn2  = v('cta-btn2');
+  }
+  else if (sec === 'colors') {
+    c.colors.gold  = v('color-gold-hex');
+    c.colors.bg    = v('color-bg-hex');
+    c.colors.text  = v('color-text-hex');
+    c.colors.green = v('color-green-hex');
+    applyColors();
+  }
+  else if (sec === 'sections') {
+    c.sections.showHero         = ch('sec-hero');
+    c.sections.showCategories   = ch('sec-categories');
+    c.sections.showFeatured     = ch('sec-featured');
+    c.sections.showAbout        = ch('sec-about');
+    c.sections.showProcess      = ch('sec-process');
+    c.sections.showTestimonials = ch('sec-testimonials');
+    c.sections.showCta          = ch('sec-cta');
+  }
+
+  toast('Modifications enregistrées ✓', 'success');
+  renderHome(); // re-render home with new config
+}
+
+function previewContent() {
+  toast('Aperçu : retournez sur l\'accueil pour voir les changements', 'info');
+  saveContent(currentContentSection);
+  go('home');
+}
+
+function handleAboutPhoto(event) {
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    siteConfig.about.photo = e.target.result;
+    toast('Photo uploadée ✓', 'success');
+    renderContentEditor('about');
+  };
+  reader.readAsDataURL(file);
+}
+
+function addTestimonial() {
+  siteConfig.testimonials.items.push({ name: 'Nouveau client', date: '2025', text: 'Excellent travail, je recommande !' });
+  renderContentEditor('testimonials');
+}
+
+function removeTestimonial(i) {
+  siteConfig.testimonials.items.splice(i, 1);
+  renderContentEditor('testimonials');
+}
+
+function liveColorPreview() {
+  const gold = document.getElementById('ce-color-gold')?.value;
+  const bg   = document.getElementById('ce-color-bg')?.value;
+  const text = document.getElementById('ce-color-text')?.value;
+  const green= document.getElementById('ce-color-green')?.value;
+  if (gold) document.documentElement.style.setProperty('--gold', gold);
+  if (bg)   document.documentElement.style.setProperty('--bg', bg);
+  if (text) document.documentElement.style.setProperty('--text', text);
+  if (green)document.documentElement.style.setProperty('--green', green);
+  // sync hex fields
+  if (gold) { const h=document.getElementById('ce-color-gold-hex'); if(h) h.value=gold; }
+  if (bg)   { const h=document.getElementById('ce-color-bg-hex');   if(h) h.value=bg; }
+  if (text) { const h=document.getElementById('ce-color-text-hex'); if(h) h.value=text; }
+  if (green){ const h=document.getElementById('ce-color-green-hex');if(h) h.value=green; }
+}
+
+function syncColorPicker(key) {
+  const hex = document.getElementById(`ce-color-${key}-hex`)?.value;
+  const picker = document.getElementById(`ce-color-${key}`);
+  if (hex && /^#[0-9a-fA-F]{6}$/.test(hex) && picker) {
+    picker.value = hex;
+    liveColorPreview();
+  }
+}
+
+const PRESETS = {
+  gold:    { gold:'#c9a84c', bg:'#060608', text:'#f0ede8', green:'#52c284' },
+  blue:    { gold:'#4a90d9', bg:'#040810', text:'#e8f0f8', green:'#52c284' },
+  rose:    { gold:'#c9748c', bg:'#080406', text:'#f8ece8', green:'#5ec28c' },
+  emerald: { gold:'#3dba7a', bg:'#040a06', text:'#e8f8ee', green:'#52c284' },
+  silver:  { gold:'#a0aab8', bg:'#06080a', text:'#eceef0', green:'#52c284' },
+};
+
+function applyPreset(name) {
+  const p = PRESETS[name];
+  if (!p) return;
+  Object.assign(siteConfig.colors, p);
+  applyColors();
+  renderContentEditor('colors');
+  toast('Préréglage appliqué', 'success');
+}
+
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// renderCategories helper (used inside renderHome)
+function renderCategories() {
+  const grid = document.getElementById('categoriesGrid');
+  if (!grid) return;
+  grid.innerHTML = Object.entries(CATEGORY_INFO).map(([key, val]) => `
+    <div class="category-card" onclick="go('gallery')">
+      <div class="category-card-bg" style="background:${val.gradient}"></div>
+      <div class="category-card-overlay"></div>
+      <div class="category-card-arrow">↗</div>
+      <div class="category-card-glass">
+        <span class="category-card-icon">${val.icon}</span>
+        <div class="category-card-title">${getCategoryLabel(key)}</div>
+        <div class="category-card-count">${val.count} oeuvres · ${val.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+applyColors();
+loadFromStorage();
+applyColors();
+go('home');
+</script>
+</body>
+</html>
