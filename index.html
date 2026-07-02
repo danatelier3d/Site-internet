@@ -1052,6 +1052,90 @@ body {
 .about-stat-num { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 700; color: var(--gold); }
 .about-stat-label { font-size: 13px; color: var(--text-muted); letter-spacing: 1px; }
 
+/* ── ABOUT : présentation éditoriale ── */
+.about-intro-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: center; }
+.about-intro-text .about-headline { font-family: 'Playfair Display', serif; font-size: 34px; font-weight: 700; line-height: 1.2; color: var(--text); font-style: italic; }
+.about-intro-text p { font-size: 16px; color: var(--text-muted); line-height: 1.85; margin-bottom: 16px; }
+.about-chapters { max-width: 820px; margin: 72px auto 0; display: flex; flex-direction: column; gap: 48px; }
+.about-chapter { position: relative; padding-left: 26px; }
+.about-chapter::before { content: ''; position: absolute; left: 0; top: 6px; bottom: 6px; width: 2px; background: linear-gradient(180deg, var(--gold), transparent); border-radius: 2px; }
+.about-chapter-title { font-family: 'Playfair Display', serif; font-size: 25px; font-weight: 600; color: var(--text); margin-bottom: 18px; line-height: 1.3; }
+.about-chapter p { font-size: 16px; color: var(--text-muted); line-height: 1.85; margin-bottom: 16px; }
+.about-lines { display: flex; flex-direction: column; gap: 6px; margin: 20px 0; }
+.about-line { font-family: 'Playfair Display', serif; font-style: italic; font-size: 19px; color: var(--gold2); line-height: 1.5; }
+.about-bullets { list-style: none; margin: 10px 0 20px; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.about-bullets li { position: relative; padding-left: 26px; font-size: 16px; color: var(--text); line-height: 1.6; }
+.about-bullets li::before { content: '◆'; position: absolute; left: 0; top: 1px; color: var(--gold); font-size: 12px; }
+.about-closing { font-size: 17px !important; color: var(--text) !important; font-style: italic; border-top: 1px solid var(--glass-border); padding-top: 20px; margin-top: 4px !important; }
+@media (max-width: 768px) {
+  .about-intro-grid { grid-template-columns: 1fr; gap: 32px; }
+  .about-chapters { margin-top: 48px; gap: 36px; }
+  .about-intro-text .about-headline { font-size: 28px; }
+}
+
+/* ── ABOUT : encadré compact + "En savoir plus" ── */
+.about-card {
+  max-width: 1040px; margin: 0 auto;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+.about-toggle-wrap { text-align: center; margin-top: 30px; }
+.about-toggle {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 26px; border-radius: 50px;
+  background: transparent; color: var(--gold);
+  border: 1px solid var(--gold); cursor: pointer;
+  font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500;
+  transition: all .3s;
+}
+.about-toggle:hover { background: rgba(201,168,76,0.1); box-shadow: 0 0 20px var(--gold-glow); }
+.about-toggle-icon { display: inline-block; transition: transform .4s ease; font-size: 12px; }
+.about-more {
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height .55s ease, opacity .4s ease, margin-top .4s ease, padding-top .4s ease;
+}
+.about-more.open {
+  max-height: 440px; overflow-y: auto; opacity: 1;
+  margin-top: 30px; padding: 30px 14px 4px 4px;
+  border-top: 1px solid var(--glass-border);
+}
+.about-more .about-chapters { margin-top: 0; max-width: none; }
+.about-more::-webkit-scrollbar { width: 6px; }
+.about-more::-webkit-scrollbar-track { background: transparent; }
+.about-more::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.4); border-radius: 3px; }
+@media (max-width: 768px) {
+  .about-card { padding: 26px 20px; }
+  .about-more.open { max-height: 60vh; }
+}
+
+/* ── STAGES / ATELIERS ── */
+.stages-intro { max-width: 760px; margin: 0 auto 44px; text-align: center; }
+.stages-intro p { font-size: 17px; color: var(--text-muted); line-height: 1.85; margin-bottom: 16px; }
+.stages-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1040px; margin: 0 auto; }
+.stage-card {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg); padding: 32px 26px; text-align: center;
+  transition: transform .3s, border-color .3s, box-shadow .3s;
+}
+.stage-card:hover { transform: translateY(-6px); border-color: var(--gold); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
+.stage-card-icon { font-size: 40px; margin-bottom: 16px; }
+.stage-card-title { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+.stage-card-desc { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 18px; }
+.stage-card-meta { display: inline-block; font-size: 13px; font-weight: 600; color: var(--gold); border: 1px solid var(--gold); border-radius: 50px; padding: 6px 16px; }
+.stages-practical { max-width: 720px; margin: 52px auto 0; padding: 32px 36px; border-radius: var(--radius-lg); }
+.stages-practical-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 20px; text-align: center; }
+.stages-practical-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 28px; }
+.stages-practical-list li { font-size: 15px; color: var(--text); line-height: 1.6; }
+@media (max-width: 768px) {
+  .stages-grid { grid-template-columns: 1fr; }
+  .stages-practical-list { grid-template-columns: 1fr; }
+  .stages-practical { padding: 26px 22px; }
+}
+
 /* ── PROCESS ── */
 .process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
 .process-card { padding: 28px 24px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius); backdrop-filter: blur(16px); text-align: center; transition: all 0.3s; }
@@ -1157,6 +1241,8 @@ footer {
   <ul class="nav-links" id="navLinks">
     <li><span class="nav-link" data-page="home" onclick="go('home')">Accueil</span></li>
     <li><span class="nav-link" data-page="gallery" onclick="go('gallery')">Galerie</span></li>
+    <li><span class="nav-link" data-page="collection" onclick="go('collection')">Collection privée</span></li>
+    <li id="navStagesLi" style="display:none"><span class="nav-link" data-page="stages" onclick="go('stages')">Stages</span></li>
     <li><span class="nav-link" data-page="reservation" onclick="go('reservation')">Réservation</span></li>
     <li>
       <button class="nav-cart-btn" onclick="go('cart')">
@@ -1195,6 +1281,29 @@ footer {
     </div>
     <div class="artworks-grid" id="galleryGrid"></div>
   </div>
+</div>
+
+<!-- COLLECTION PRIVÉE PAGE (exposition seule, sans vente) -->
+<div id="page-collection" class="hidden">
+  <div class="page-header">
+    <p class="section-label">Œuvres d'exposition</p>
+    <h1 class="page-title">Collection <em style="color:var(--gold);font-style:italic">privée</em></h1>
+    <p class="page-subtitle" id="collectionCount"></p>
+    <p style="max-width:620px;margin:14px auto 0;font-size:14px;color:var(--text-muted);line-height:1.7">Une sélection d'œuvres présentées pour le plaisir des yeux — pièces personnelles, réalisations passées ou créations non destinées à la vente.</p>
+  </div>
+  <div class="section" style="padding-top:0">
+    <div id="collectionEmpty" class="empty-state hidden">
+      <div class="empty-icon">🖼️</div>
+      <div class="empty-title">La collection privée est vide pour le moment</div>
+      <div class="empty-desc">De nouvelles œuvres d'exposition seront bientôt présentées ici.</div>
+    </div>
+    <div class="artworks-grid" id="collectionGrid"></div>
+  </div>
+</div>
+
+<!-- STAGES / ATELIERS PAGE (activable depuis l'admin) -->
+<div id="page-stages" class="hidden">
+  <div id="stagesContent"></div>
 </div>
 
 <!-- CART PAGE -->
@@ -1319,10 +1428,11 @@ footer {
           <div class="form-group">
             <label class="form-label">Type de création</label>
             <select class="form-select" id="res-type" onchange="checkPhotoNotice()">
-              <option value="acrylique">Acrylique sur Époxy</option>
-              <option value="personnelles">Création Personnelle</option>
-              <option value="portrait">Portrait Artistique</option>
-              <option value="photo">Tableau d'après Photo</option>
+              <option value="epoxy3d">Acrylique sur Époxy 3D</option>
+              <option value="acrylique">Acrylique</option>
+              <option value="huile">Huile sur toile</option>
+              <option value="aquarelle">Aquarelle</option>
+              <option value="fusain">Fusain / Dessin</option>
             </select>
           </div>
         </div>
@@ -1345,8 +1455,8 @@ footer {
           </div>
           <div class="form-group"><label class="form-label">Date souhaitée</label><input class="form-input" type="date" id="res-deadline" /></div>
           <div class="form-group full"><label class="form-label">Notes supplémentaires</label><textarea class="form-textarea" id="res-notes" placeholder="Toute information utile pour votre projet..." rows="3"></textarea></div>
-          <div class="form-group full hidden" id="photoNotice" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:20px">
-            <p style="font-size:14px;color:var(--text-muted);line-height:1.6">📸 <strong style="color:var(--text)">Tableau d'après photo</strong> — Après validation de votre demande, Dan vous contactera pour recevoir votre photo en haute résolution.</p>
+          <div class="form-group full" id="photoNotice" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:20px">
+            <p style="font-size:14px;color:var(--text-muted);line-height:1.6">📸 <strong style="color:var(--text)">Une photo ou un modèle en tête ?</strong> — Après validation de votre demande, Dan vous contactera pour recevoir votre référence (photo, croquis, inspiration) en haute résolution.</p>
           </div>
         </div>
       </div>
@@ -1448,6 +1558,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .nav-badge{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:var(--red);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
 .nav-badge.gold{background:var(--gold);color:#000}
 .nav-section-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);padding:16px 14px 6px;opacity:.6}
+.nav-status-dot{width:8px;height:8px;border-radius:50%;background:var(--text-muted);margin-left:auto;flex-shrink:0}
+.nav-status-dot.on{background:var(--green);box-shadow:0 0 8px var(--green)}
 .sidebar-footer{padding:16px 12px;border-top:1px solid var(--glass-border)}
 .site-link{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;color:var(--text-muted);cursor:pointer;transition:all .2s;text-decoration:none}
 .site-link:hover{background:var(--glass);color:var(--gold)}
@@ -1703,6 +1815,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         <div class=&quot;nav-item&quot; id=&quot;nav-add&quot; onclick=&quot;showPage('add')&quot;>
           <span class=&quot;nav-item-icon&quot;>➕</span> Ajouter une œuvre
         </div>
+        <div class=&quot;nav-item&quot; id=&quot;nav-collection&quot; onclick=&quot;showPage('collection')&quot;>
+          <span class=&quot;nav-item-icon&quot;>🖼️</span> Collection privée
+          <span class=&quot;nav-badge gold&quot; id=&quot;badgeCollection&quot; style=&quot;display:none&quot;></span>
+        </div>
 
         <div class=&quot;nav-section-label&quot;>Commerce</div>
         <div class=&quot;nav-item&quot; id=&quot;nav-clients&quot; onclick=&quot;showPage('clients')&quot;>
@@ -1734,6 +1850,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         <div class=&quot;nav-item&quot; id=&quot;nav-testimonials&quot; onclick=&quot;showPage('testimonials')&quot;>
           <span class=&quot;nav-item-icon&quot;>⭐</span> Avis clients
         </div>
+        <div class=&quot;nav-item&quot; id=&quot;nav-stages&quot; onclick=&quot;showPage('stages')&quot;>
+          <span class=&quot;nav-item-icon&quot;>🖌️</span> Stages / Ateliers
+          <span class=&quot;nav-status-dot&quot; id=&quot;stagesDot&quot;></span>
+        </div>
         <div class=&quot;nav-item&quot; id=&quot;nav-cta&quot; onclick=&quot;showPage('cta')&quot;>
           <span class=&quot;nav-item-icon&quot;>📣</span> Bandeau CTA
         </div>
@@ -1745,7 +1865,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         </div>
       </nav>
       <div class=&quot;sidebar-footer&quot;>
-        <a class=&quot;site-link&quot; href=&quot;dan-atelier-3d.html&quot; target=&quot;_blank&quot;>🌐 Voir le site</a>
+        <a class=&quot;site-link&quot; href=&quot;index.html&quot; target=&quot;_blank&quot;>🌐 Voir le site</a>
         <div class=&quot;site-link&quot; onclick=&quot;doLogout()&quot; style=&quot;color:var(--red)&quot;>⏻ Déconnexion</div>
       </div>
     </aside>
@@ -1779,10 +1899,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Titre *</label><input class=&quot;form-input&quot; id=&quot;em-title&quot; /></div>
       <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Catégorie</label>
         <select class=&quot;form-select&quot; id=&quot;em-cat&quot;>
-          <option value=&quot;acrylique&quot;>Acrylique sur Époxy</option>
-          <option value=&quot;personnelles&quot;>Création Personnelle</option>
-          <option value=&quot;portrait&quot;>Portrait Artistique</option>
-          <option value=&quot;photo&quot;>Tableau Photo</option>
+          <option value=&quot;epoxy3d&quot;>Acrylique sur Époxy 3D</option>
+          <option value=&quot;acrylique&quot;>Acrylique</option>
+          <option value=&quot;huile&quot;>Huile sur toile</option>
+          <option value=&quot;aquarelle&quot;>Aquarelle</option>
+          <option value=&quot;fusain&quot;>Fusain / Dessin</option>
         </select>
       </div>
       <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Prix (€) *</label><input class=&quot;form-input&quot; type=&quot;number&quot; id=&quot;em-price&quot; min=&quot;0&quot; /></div>
@@ -1797,6 +1918,15 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Emoji</label><input class=&quot;form-input&quot; id=&quot;em-emoji&quot; /></div>
       <div class=&quot;form-group full&quot;><label class=&quot;form-label&quot;>Gradient CSS <span class=&quot;form-hint&quot;>(couleur de fond si pas de photo)</span></label><input class=&quot;form-input&quot; id=&quot;em-gradient&quot; /></div>
       <div class=&quot;form-group full&quot;><label class=&quot;form-label&quot;>Description</label><textarea class=&quot;form-textarea&quot; id=&quot;em-desc&quot; rows=&quot;4&quot;></textarea></div>
+      <div class=&quot;form-group full&quot;>
+        <label style=&quot;display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:rgba(201,168,76,.06);border:1px solid var(--glass-border);border-radius:var(--radius-sm);cursor:pointer&quot;>
+          <input type=&quot;checkbox&quot; id=&quot;em-showcase&quot; style=&quot;width:18px;height:18px;margin-top:2px;accent-color:var(--gold);cursor:pointer&quot; />
+          <span>
+            <span style=&quot;display:block;font-weight:600;color:var(--text)&quot;>🖼️ Collection privée (exposition sans vente)</span>
+            <span style=&quot;display:block;font-size:12px;color:var(--text-muted);margin-top:3px&quot;>Affichée dans l'onglet « Collection privée » du site, sans prix ni achat. Retirée de la galerie de vente.</span>
+          </span>
+        </label>
+      </div>
       <div class=&quot;form-group full&quot;>
         <label class=&quot;form-label&quot;>Photo <span class=&quot;form-hint&quot;>(remplace l'emoji)</span></label>
         <div class=&quot;upload-zone&quot;>
@@ -1822,14 +1952,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 // DATA DEFAULTS
 // ═══════════════════════════════════════════════════════════════
 const DEFAULT_ARTWORKS = [
-  { id: 1, title: 'Vague Océanique', category: 'acrylique', price: 450, dimensions: '60×80 cm', description: &quot;Une œuvre captivante où l'acrylique danse sur la résine époxy translucide.&quot;, sold: false, emoji: '🌊', gradient: 'linear-gradient(135deg,#1a6b9a,#0d2d5e,#2a9d8f)' },
-  { id: 2, title: 'Cosmos Intérieur', category: 'personnelles', price: 680, dimensions: '80×100 cm', description: &quot;Voyage introspectif à travers les galaxies intérieures.&quot;, sold: false, emoji: '🌌', gradient: 'linear-gradient(135deg,#1a0533,#3d1458,#6b21a8)' },
-  { id: 3, title: 'Portrait de Marie', category: 'portrait', price: 820, dimensions: '50×70 cm', description: &quot;Portrait réaliste sublimé par une finition époxy haute brillance.&quot;, sold: true, emoji: '👩‍🎨', gradient: 'linear-gradient(135deg,#3d1c1c,#7c3030,#a85050)' },
-  { id: 4, title: 'Souvenir Éternel', category: 'photo', price: 550, dimensions: '40×60 cm', description: &quot;Transformation d'une photographie familiale en tableau époxy.&quot;, sold: false, emoji: '📸', gradient: 'linear-gradient(135deg,#2d1b00,#7c5200,#c9a84c)' },
-  { id: 5, title: 'Forêt Enchantée', category: 'acrylique', price: 520, dimensions: '70×90 cm', description: &quot;Sous-bois mystérieux à travers les couches de résine translucide.&quot;, sold: false, emoji: '🌲', gradient: 'linear-gradient(135deg,#0a2e0a,#1a5c1a,#2d8c2d)' },
-  { id: 6, title: 'Abstraction Dorée', category: 'personnelles', price: 390, dimensions: '50×50 cm', description: &quot;Composition géométrique abstraite avec feuilles d'or.&quot;, sold: false, emoji: '✨', gradient: 'linear-gradient(135deg,#2a1a00,#8c6200,#c9a84c)' },
-  { id: 7, title: &quot;Coucher sur l'Atlas&quot;, category: 'photo', price: 620, dimensions: '60×80 cm', description: &quot;Photographie montagnarde transcendée par la résine.&quot;, sold: true, emoji: '🏔️', gradient: 'linear-gradient(135deg,#1a1a2e,#16213e,#e94560)' },
-  { id: 8, title: 'Méditerranée', category: 'acrylique', price: 490, dimensions: '80×60 cm', description: &quot;Les bleus méditerranéens capturés dans la résine.&quot;, sold: false, emoji: '⛵', gradient: 'linear-gradient(135deg,#003366,#0066cc,#66b3ff)' },
+  { id: 1, title: 'Vague Océanique', category: 'epoxy3d', price: 450, dimensions: '60×80 cm', description: &quot;Une œuvre captivante où l'acrylique danse sur la résine époxy translucide.&quot;, sold: false, emoji: '🌊', gradient: 'linear-gradient(135deg,#1a6b9a,#0d2d5e,#2a9d8f)' },
+  { id: 2, title: 'Cosmos Intérieur', category: 'acrylique', price: 680, dimensions: '80×100 cm', description: &quot;Voyage introspectif à travers les galaxies intérieures.&quot;, sold: false, emoji: '🌌', gradient: 'linear-gradient(135deg,#1a0533,#3d1458,#6b21a8)' },
+  { id: 3, title: 'Portrait de Marie', category: 'huile', price: 820, dimensions: '50×70 cm', description: &quot;Portrait réaliste sublimé par une finition époxy haute brillance.&quot;, sold: true, emoji: '👩‍🎨', gradient: 'linear-gradient(135deg,#3d1c1c,#7c3030,#a85050)' },
+  { id: 4, title: 'Souvenir Éternel', category: 'aquarelle', price: 550, dimensions: '40×60 cm', description: &quot;Transformation d'une photographie familiale en tableau époxy.&quot;, sold: false, emoji: '📸', gradient: 'linear-gradient(135deg,#2d1b00,#7c5200,#c9a84c)' },
+  { id: 5, title: 'Forêt Enchantée', category: 'fusain', price: 520, dimensions: '70×90 cm', description: &quot;Sous-bois mystérieux à travers les couches de résine translucide.&quot;, sold: false, emoji: '🌲', gradient: 'linear-gradient(135deg,#0a2e0a,#1a5c1a,#2d8c2d)' },
+  { id: 6, title: 'Abstraction Dorée', category: 'acrylique', price: 390, dimensions: '50×50 cm', description: &quot;Composition géométrique abstraite avec feuilles d'or.&quot;, sold: false, emoji: '✨', gradient: 'linear-gradient(135deg,#2a1a00,#8c6200,#c9a84c)' },
+  { id: 7, title: &quot;Coucher sur l'Atlas&quot;, category: 'epoxy3d', price: 620, dimensions: '60×80 cm', description: &quot;Photographie montagnarde transcendée par la résine.&quot;, sold: true, emoji: '🏔️', gradient: 'linear-gradient(135deg,#1a1a2e,#16213e,#e94560)' },
+  { id: 8, title: 'Méditerranée', category: 'aquarelle', price: 490, dimensions: '80×60 cm', description: &quot;Les bleus méditerranéens capturés dans la résine.&quot;, sold: false, emoji: '⛵', gradient: 'linear-gradient(135deg,#003366,#0066cc,#66b3ff)' },
 ];
 
 const DEFAULT_RESERVATIONS = [
@@ -1847,10 +1977,11 @@ const DEFAULT_ORDERS = [
 
 const DEFAULT_CONFIG = {
   hero: { badge:'Artiste peintre · Résine époxy', title:'Dan Atelier 3D', subtitle:&quot;L'art en profondeur&quot;, desc:&quot;Peintures uniques sur résine époxy alliant techniques acryliques, portraits réalistes et créations sur mesure d'après vos photos.&quot;, btn1:'✦ Explorer la Galerie', btn2:'Commande sur mesure' },
-  about: { label:&quot;L'artiste&quot;, title:'Passion pour la résine époxy', p1:&quot;Artiste autodidacte, Dan crée des œuvres uniques alliant la fluidité de la peinture acrylique à la profondeur envoûtante de la résine époxy.&quot;, p2:&quot;Chaque tableau est une invitation au voyage – dans les profondeurs marines, les galaxies lointaines, ou dans vos plus beaux souvenirs photographiques.&quot;, quote:&quot;Chaque goutte de résine est une fenêtre vers un autre monde.&quot;, stat1num:'+120', stat1lbl:'Œuvres créées', stat2num:'+80', stat2lbl:'Clients satisfaits', stat3num:'5★', stat3lbl:'Avis clients', btnLabel:'Commander une œuvre →', photo:null },
+  about: { label:&quot;À propos — Dan Atelier 3D&quot;, title:&quot;Un artiste immersif enraciné en Provence&quot;, intro1:&quot;Je suis Daniel, artiste plasticien installé à Cavaillon, créateur d'une peinture immersive en relief 3D. Mon travail explore la rencontre entre l'acrylique, l'époxy et la matière, pour donner naissance à des œuvres qui ne se regardent pas seulement : elles se vivent.&quot;, intro2:&quot;Chaque tableau est une immersion sensorielle, une profondeur qui invite le regard à entrer dans la couleur, à suivre les reliefs, à ressentir la lumière.&quot;, quote:&quot;Je ne cherche pas à reproduire le réel, mais à révéler ce qui se passe derrière lui.&quot;, c1title:&quot;Une technique singulière : la peinture qui sort du cadre&quot;, c1body:&quot;Mon approche repose sur une technique émergente mêlant couches d'époxy, pigments, acrylique et modelage.&quot;, c1lines:[&quot;Le relief devient un langage.&quot;,&quot;La matière devient une émotion.&quot;,&quot;La couleur devient un espace.&quot;], c1body2:&quot;Cette dimension tridimensionnelle crée une présence unique : les œuvres changent selon l'angle, la lumière, et même l'humeur de celui qui les contemple.&quot;, c2title:&quot;Un parcours entre tradition et innovation&quot;, c2body:&quot;Inspiré par les maîtres de la couleur — notamment Van Gogh, dont j'explore les vibrations dans une série en relief — je développe une écriture picturale personnelle, ancrée dans les paysages de Provence et dans l'énergie brute des pigments naturels, dont ceux des ocres de Roussillon.&quot;, c2body2:&quot;Mon travail est à la croisée de l'art contemporain, de la matière, et de l'expérience sensorielle. Il s'adresse à celles et ceux qui cherchent une œuvre vivante, tactile, émotionnelle.&quot;, c3title:&quot;Créer des émotions, pas seulement des tableaux&quot;, c3body:&quot;Chaque création est une rencontre :&quot;, c3bullets:[&quot;entre la lumière et la profondeur,&quot;,&quot;entre la matière et le mouvement,&quot;,&quot;entre votre histoire et la mienne.&quot;], c3body2:&quot;Mon objectif n'est pas de reproduire le réel, mais de révéler ce qui se passe derrière lui — ce qui touche, ce qui remue, ce qui reste.&quot;, btnLabel:'Commander une œuvre →', photo:null },
   process: { label:'Processus', title:'Comment ça marche ?', steps:[{icon:'💬',num:'01',title:'Consultation',desc:'Échange sur votre projet, vos souhaits et votre budget.'},{icon:'🎨',num:'02',title:'Création',desc:'Dan réalise votre tableau avec passion et précision.'},{icon:'✨',num:'03',title:'Finition Époxy',desc:'Application de la résine pour un fini brillant 3D unique.'},{icon:'🚚',num:'04',title:'Livraison',desc:'Livraison soignée ou retrait en atelier.'}] },
   testimonials: { label:'Avis clients', title:&quot;Ce qu'ils disent&quot;, items:[{name:'Marie L.',date:'Novembre 2024',text:&quot;Mon portrait est absolument magnifique ! Dan a su capturer chaque détail avec une précision remarquable.&quot;},{name:'Thomas R.',date:'Octobre 2024',text:&quot;La transformation de notre photo de mariage en tableau époxy est époustouflante.&quot;},{name:'Isabelle M.',date:'Septembre 2024',text:&quot;L'œuvre abstraite que j'ai commandée dépasse toutes mes espérances.&quot;}] },
   cta: { label:'Prêt à commencer ?', title:'Votre tableau unique vous attend', desc:&quot;Commandez une création personnalisée ou choisissez parmi nos œuvres disponibles.&quot;, btn1:'Voir la galerie', btn2:'Réserver une création' },
+  stages: { enabled:false, label:&quot;Ateliers &amp; Stages&quot;, title:&quot;Apprenez la peinture en relief à mes côtés&quot;, intro1:&quot;Je propose des stages et ateliers de peinture dans mon atelier, pour découvrir ma technique immersive mêlant acrylique, époxy et matière. Que vous soyez débutant curieux ou peintre confirmé, chaque séance est un moment de création guidé, dans une ambiance conviviale.&quot;, intro2:&quot;Repartez avec votre propre œuvre en relief et de nouvelles techniques à explorer chez vous.&quot;, formulas:[{icon:'🎨',title:&quot;Atelier découverte&quot;,desc:&quot;Une première approche de la peinture en relief : gestes de base, jeu des matières et des couleurs. Idéal pour s'initier.&quot;,meta:&quot;2h · à partir de 45 €&quot;},{icon:'🖌️',title:&quot;Stage perfectionnement&quot;,desc:&quot;Une journée complète pour approfondir la technique époxy, la profondeur et la composition, avec un accompagnement personnalisé.&quot;,meta:&quot;1 journée · à partir de 120 €&quot;},{icon:'👧',title:&quot;Atelier enfants &amp; familles&quot;,desc:&quot;Un moment créatif et ludique adapté aux plus jeunes, pour peindre et manipuler la matière en toute sécurité.&quot;,meta:&quot;1h30 · à partir de 30 €&quot;}], practicalTitle:&quot;Infos pratiques&quot;, practical:&quot;📍 Atelier à Cavaillon (Provence)\n🎨 Matériel et tabliers fournis\n👥 Groupes de 2 à 6 personnes\n📅 Sur réservation, en semaine ou le week-end\n🚗 Parking à proximité&quot;, btnLabel:&quot;Réserver un stage →&quot; },
   colors: { gold:'#c9a84c', bg:'#060608', text:'#f0ede8', green:'#52c284', red:'#e05252' },
   sections: { showHero:true, showCategories:true, showFeatured:true, showAbout:true, showProcess:true, showTestimonials:true, showCta:true },
 };
@@ -1863,6 +1994,7 @@ let currentPage = 'dashboard';
 let editingId = null;
 let emPhotoUrl = null;
 let addPhotoUrl = null;
+let collPhotoUrl = null;
 let artworkFilter = 'all';
 let statusFilter = 'all';
 let orderFilter = 'all';
@@ -1879,12 +2011,16 @@ const ORDER_STATUS = {
 };
 
 const CATS = [
-  { key:'all',          label:'Toutes' },
-  { key:'acrylique',    label:'Acrylique sur Époxy' },
-  { key:'personnelles', label:'Créations Personnelles' },
-  { key:'portrait',     label:'Portrait Artistique' },
-  { key:'photo',        label:'Tableau Photo' },
+  { key:'all',       label:'Toutes' },
+  { key:'epoxy3d',   label:'Acrylique sur Époxy 3D' },
+  { key:'acrylique', label:'Acrylique' },
+  { key:'huile',     label:'Huile sur toile' },
+  { key:'aquarelle', label:'Aquarelle' },
+  { key:'fusain',    label:'Fusain / Dessin' },
 ];
+// Anciennes catégories -> nouvelles (compat. œuvres déjà enregistrées)
+const CAT_ALIAS = { personnelles:'acrylique', portrait:'huile', photo:'epoxy3d' };
+function normalizeCat(k){ return CAT_ALIAS[k] || k; }
 
 // ═══════════════════════════════════════════════════════════════
 // STORAGE
@@ -1911,6 +2047,8 @@ function loadAll() {
         siteConfig[k] = { ...DEFAULT_CONFIG[k], ...(siteConfig[k]||{}) };
       }
     });
+    // La structure &quot;À propos&quot; a évolué : on ignore l'ancien schéma (sans c1title)
+    if (!siteConfig.about || !siteConfig.about.c1title) siteConfig.about = { ...DEFAULT_CONFIG.about };
   } catch { siteConfig = { ...DEFAULT_CONFIG }; }
   // Auto-build/sync clients from orders + reservations
   syncClientsFromData();
@@ -2039,7 +2177,7 @@ function doLogout() {
 // ═══════════════════════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════════════════════
-const PAGE_TITLES = { dashboard:'Tableau de bord', artworks:'Gérer les œuvres', add:'Ajouter une œuvre', clients:'Base clients', stripe:'Stripe &amp; Paiements', orders:'Commandes', reservations:'Réservations', hero:'Bannière Hero', about:'Section À propos', process:'Processus', testimonials:'Avis clients', cta:'Bandeau CTA', design:'Design &amp; Couleurs', layout:'Sections visibles', clientProfile:'Fiche client' };
+const PAGE_TITLES = { dashboard:'Tableau de bord', artworks:'Gérer les œuvres', add:'Ajouter une œuvre', collection:'Collection privée', clients:'Base clients', stripe:'Stripe &amp; Paiements', orders:'Commandes', reservations:'Réservations', hero:'Bannière Hero', about:'Section À propos', process:'Processus', testimonials:'Avis clients', stages:'Stages / Ateliers', cta:'Bandeau CTA', design:'Design &amp; Couleurs', layout:'Sections visibles', clientProfile:'Fiche client' };
 
 function showPage(page) {
   currentPage = page;
@@ -2059,6 +2197,7 @@ function renderPage(p) {
   if (p === 'dashboard') c.innerHTML = renderDashboard();
   else if (p === 'artworks') c.innerHTML = renderArtworks();
   else if (p === 'add') { c.innerHTML = renderAdd(); addPhotoUrl = null; }
+  else if (p === 'collection') { c.innerHTML = renderCollectionAdmin(); collPhotoUrl = null; }
   else if (p === 'clients') c.innerHTML = renderClients();
   else if (p === 'clientProfile') c.innerHTML = renderClientProfile(selectedClientId);
   else if (p === 'stripe') c.innerHTML = renderStripe();
@@ -2068,6 +2207,7 @@ function renderPage(p) {
   else if (p === 'about') c.innerHTML = renderAboutEditor();
   else if (p === 'process') c.innerHTML = renderProcessEditor();
   else if (p === 'testimonials') c.innerHTML = renderTestimonialsEditor();
+  else if (p === 'stages') c.innerHTML = renderStagesEditor();
   else if (p === 'cta') c.innerHTML = renderCtaEditor();
   else if (p === 'design') c.innerHTML = renderDesignEditor();
   else if (p === 'layout') c.innerHTML = renderLayoutEditor();
@@ -2082,13 +2222,17 @@ function updateBadges() {
   if (bo) { bo.textContent=po; bo.style.display=po?'flex':'none'; }
   if (br) { br.textContent=pr; br.style.display=pr?'flex':'none'; }
   if (bc) { bc.textContent=clients.length; bc.style.display=clients.length?'flex':'none'; }
+  const bcol = document.getElementById('badgeCollection');
+  if (bcol) { const n = artworks.filter(a=>a.showcase).length; bcol.textContent=n; bcol.style.display=n?'flex':'none'; }
+  const sdot = document.getElementById('stagesDot');
+  if (sdot) sdot.classList.toggle('on', !!(siteConfig.stages &amp;&amp; siteConfig.stages.enabled));
 }
 
 // ═══════════════════════════════════════════════════════════════
 // UTILS
 // ═══════════════════════════════════════════════════════════════
 function fmt(n) { return n.toLocaleString('fr-FR') + ' €'; }
-function getCatLabel(k) { return (CATS.find(c=>c.key===k)||{}).label || k; }
+function getCatLabel(k) { const n = normalizeCat(k); return (CATS.find(c=>c.key===n)||{}).label || k; }
 let tid = 0;
 function toast(msg, type='info') {
   const id = ++tid;
@@ -2155,7 +2299,7 @@ function renderDashboard() {
           <button class=&quot;btn btn-glass&quot; style=&quot;justify-content:flex-start;gap:14px&quot; onclick=&quot;showPage('orders')&quot;><span style=&quot;font-size:18px&quot;>📦</span> Voir les commandes ${pendO?`<span style=&quot;margin-left:auto;background:var(--red);color:#fff;padding:2px 8px;border-radius:10px;font-size:11px&quot;>${pendO} att.</span>`:''}</button>
           <button class=&quot;btn btn-glass&quot; style=&quot;justify-content:flex-start;gap:14px&quot; onclick=&quot;showPage('reservations')&quot;><span style=&quot;font-size:18px&quot;>📋</span> Voir les réservations ${pendR?`<span style=&quot;margin-left:auto;background:var(--gold);color:#000;padding:2px 8px;border-radius:10px;font-size:11px&quot;>${pendR} att.</span>`:''}</button>
           <button class=&quot;btn btn-glass&quot; style=&quot;justify-content:flex-start;gap:14px&quot; onclick=&quot;showPage('hero')&quot;><span style=&quot;font-size:18px&quot;>✏️</span> Modifier le contenu du site</button>
-          <a href=&quot;dan-atelier-3d.html&quot; target=&quot;_blank&quot; class=&quot;btn btn-glass&quot; style=&quot;justify-content:flex-start;gap:14px&quot;><span style=&quot;font-size:18px&quot;>🌐</span> Voir le site</a>
+          <a href=&quot;index.html&quot; target=&quot;_blank&quot; class=&quot;btn btn-glass&quot; style=&quot;justify-content:flex-start;gap:14px&quot;><span style=&quot;font-size:18px&quot;>🌐</span> Voir le site</a>
         </div>
       </div>
       <div class=&quot;section-card&quot;>
@@ -2182,9 +2326,10 @@ function renderDashboard() {
 // ═══════════════════════════════════════════════════════════════
 function renderArtworks() {
   let filtered = artworks;
-  if (artworkFilter !== 'all') filtered = filtered.filter(a=>a.category===artworkFilter);
+  if (artworkFilter !== 'all') filtered = filtered.filter(a=>normalizeCat(a.category)===artworkFilter);
   if (statusFilter === 'available') filtered = filtered.filter(a=>!a.sold);
   if (statusFilter === 'sold') filtered = filtered.filter(a=>a.sold);
+  if (statusFilter === 'showcase') filtered = filtered.filter(a=>a.showcase);
   return `
     <div style=&quot;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px&quot;>
       <div style=&quot;font-size:13px;color:var(--text-muted)&quot;>${filtered.length} œuvre${filtered.length>1?'s':''}</div>
@@ -2196,6 +2341,7 @@ function renderArtworks() {
           <option value=&quot;all&quot;${statusFilter==='all'?' selected':''}>Tous statuts</option>
           <option value=&quot;available&quot;${statusFilter==='available'?' selected':''}>Disponibles</option>
           <option value=&quot;sold&quot;${statusFilter==='sold'?' selected':''}>Vendus</option>
+          <option value=&quot;showcase&quot;${statusFilter==='showcase'?' selected':''}>Collection privée</option>
         </select>
         <button class=&quot;btn btn-primary btn-sm&quot; onclick=&quot;showPage('add')&quot;>➕ Ajouter</button>
       </div>
@@ -2207,10 +2353,11 @@ function renderArtworks() {
           <div class=&quot;artwork-thumb&quot; style=&quot;background:${a.gradient}&quot;>
             ${thumbHTML(a)}
             ${a.sold?'<div class=&quot;sold-overlay&quot;>Vendu</div>':''}
+            ${a.showcase?'<div style=&quot;position:absolute;top:8px;left:8px;background:rgba(201,168,76,.92);color:#060608;font-size:10px;font-weight:700;letter-spacing:.5px;padding:4px 9px;border-radius:20px&quot;>🖼️ COLLECTION PRIVÉE</div>':''}
           </div>
           <div class=&quot;artwork-body&quot;>
             <div class=&quot;artwork-name&quot;>${a.title}</div>
-            <div class=&quot;artwork-meta&quot;>${getCatLabel(a.category)} · ${a.dimensions||'—'}</div>
+            <div class=&quot;artwork-meta&quot;>${getCatLabel(a.category)} · ${a.dimensions||'—'}${a.showcase?' · <span style=&quot;color:var(--gold)&quot;>Exposition</span>':''}</div>
             <div class=&quot;price-row&quot;>
               <input class=&quot;price-input&quot; type=&quot;number&quot; value=&quot;${a.price}&quot; min=&quot;0&quot;
                 onchange=&quot;quickPrice(${a.id},this.value)&quot; title=&quot;Modifier le prix&quot; />
@@ -2256,13 +2403,14 @@ function openEditModal(id) {
   editingId = id; emPhotoUrl = a.photo||null;
   document.getElementById('em-id').value = id;
   document.getElementById('em-title').value = a.title;
-  document.getElementById('em-cat').value = a.category;
+  document.getElementById('em-cat').value = normalizeCat(a.category);
   document.getElementById('em-price').value = a.price;
   document.getElementById('em-dims').value = a.dimensions||'';
   document.getElementById('em-emoji').value = a.emoji;
   document.getElementById('em-gradient').value = a.gradient;
   document.getElementById('em-desc').value = a.description||'';
   document.getElementById('em-sold').value = String(a.sold);
+  document.getElementById('em-showcase').checked = !!a.showcase;
   document.getElementById('em-photoPreview').innerHTML = a.photo?`<img src=&quot;${a.photo}&quot; style=&quot;width:100px;height:80px;object-fit:cover;border-radius:8px;border:2px solid var(--glass-border)&quot; />`:'';
   document.getElementById('em-photo').value='';
   document.getElementById('editModal').style.display='flex';
@@ -2300,6 +2448,7 @@ function saveEditArtwork() {
     gradient: document.getElementById('em-gradient').value,
     description: document.getElementById('em-desc').value,
     sold: document.getElementById('em-sold').value==='true',
+    showcase: !!document.getElementById('em-showcase').checked,
     ...(emPhotoUrl?{photo:emPhotoUrl}:{}),
   }:a);
   save();
@@ -2317,10 +2466,11 @@ function renderAdd() {
         <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Titre *</label><input class=&quot;form-input&quot; id=&quot;na-title&quot; placeholder=&quot;Ex : Vague Océanique&quot; oninput=&quot;updateAddPreview()&quot; /></div>
         <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Catégorie</label>
           <select class=&quot;form-select&quot; id=&quot;na-cat&quot; onchange=&quot;updateAddPreview()&quot;>
-            <option value=&quot;acrylique&quot;>Acrylique sur Époxy</option>
-            <option value=&quot;personnelles&quot;>Création Personnelle</option>
-            <option value=&quot;portrait&quot;>Portrait Artistique</option>
-            <option value=&quot;photo&quot;>Tableau Photo</option>
+            <option value=&quot;epoxy3d&quot;>Acrylique sur Époxy 3D</option>
+            <option value=&quot;acrylique&quot;>Acrylique</option>
+            <option value=&quot;huile&quot;>Huile sur toile</option>
+            <option value=&quot;aquarelle&quot;>Aquarelle</option>
+            <option value=&quot;fusain&quot;>Fusain / Dessin</option>
           </select>
         </div>
         <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Prix (€) *</label><input class=&quot;form-input&quot; type=&quot;number&quot; id=&quot;na-price&quot; placeholder=&quot;450&quot; min=&quot;0&quot; oninput=&quot;updateAddPreview()&quot; /></div>
@@ -2340,6 +2490,15 @@ function renderAdd() {
         <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Emoji <span class=&quot;form-hint&quot;>(si pas de photo)</span></label><input class=&quot;form-input&quot; id=&quot;na-emoji&quot; value=&quot;🎨&quot; oninput=&quot;updateAddPreview()&quot; /></div>
         <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Fond (gradient CSS)</label><input class=&quot;form-input&quot; id=&quot;na-gradient&quot; value=&quot;linear-gradient(135deg,#1a0533,#3d1458,#6b21a8)&quot; oninput=&quot;updateAddPreview()&quot; /></div>
         <div class=&quot;form-group full&quot;><label class=&quot;form-label&quot;>Description</label><textarea class=&quot;form-textarea&quot; id=&quot;na-desc&quot; placeholder=&quot;Décrivez l'œuvre : technique, inspiration, dimensions...&quot; rows=&quot;4&quot;></textarea></div>
+        <div class=&quot;form-group full&quot;>
+          <label style=&quot;display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:rgba(201,168,76,.06);border:1px solid var(--glass-border);border-radius:var(--radius-sm);cursor:pointer&quot;>
+            <input type=&quot;checkbox&quot; id=&quot;na-showcase&quot; style=&quot;width:18px;height:18px;margin-top:2px;accent-color:var(--gold);cursor:pointer&quot; />
+            <span>
+              <span style=&quot;display:block;font-weight:600;color:var(--text)&quot;>🖼️ Collection privée (exposition sans vente)</span>
+              <span style=&quot;display:block;font-size:12px;color:var(--text-muted);margin-top:3px&quot;>L'œuvre sera affichée dans l'onglet « Collection privée » du site, sans prix ni bouton d'achat. Elle n'apparaîtra pas dans la galerie de vente.</span>
+            </span>
+          </label>
+        </div>
       </div>
       <div id=&quot;naPreview&quot; style=&quot;display:none;margin:20px 0;gap:16px;align-items:center;padding:18px;background:rgba(255,255,255,.03);border:1px solid var(--glass-border);border-radius:var(--radius)&quot;>
         <div id=&quot;naPreviewThumb&quot; style=&quot;width:90px;height:72px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:30px;overflow:hidden;flex-shrink:0&quot;></div>
@@ -2389,7 +2548,8 @@ function addArtwork() {
   const title=document.getElementById('na-title')?.value.trim();
   const price=document.getElementById('na-price')?.value;
   if(!title||!price){toast('Titre et prix requis','error');return;}
-  artworks.push({id:Date.now(),title,category:document.getElementById('na-cat').value,price:Number(price),dimensions:document.getElementById('na-dims').value,description:document.getElementById('na-desc').value,emoji:document.getElementById('na-emoji').value||'🎨',gradient:document.getElementById('na-gradient').value,sold:false,...(addPhotoUrl?{photo:addPhotoUrl}:{})});
+  const showcase=!!document.getElementById('na-showcase')?.checked;
+  artworks.push({id:Date.now(),title,category:document.getElementById('na-cat').value,price:Number(price),dimensions:document.getElementById('na-dims').value,description:document.getElementById('na-desc').value,emoji:document.getElementById('na-emoji').value||'🎨',gradient:document.getElementById('na-gradient').value,sold:false,showcase,...(addPhotoUrl?{photo:addPhotoUrl}:{})});
   save();
   toast('Œuvre publiée ✓','success');
   clearAddForm();
@@ -2403,7 +2563,128 @@ function clearAddForm() {
   const p=document.getElementById('na-photo');if(p)p.value='';
   const pp=document.getElementById('naPhotoPreview');if(pp)pp.innerHTML='';
   const prev=document.getElementById('naPreview');if(prev)prev.style.display='none';
+  const sc=document.getElementById('na-showcase');if(sc)sc.checked=false;
   addPhotoUrl=null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// COLLECTION PRIVÉE (gestion dédiée — exposition sans vente)
+// ═══════════════════════════════════════════════════════════════
+function renderCollectionAdmin() {
+  const items = artworks.filter(a=>a.showcase);
+  return `
+    <div class=&quot;section-card&quot; style=&quot;max-width:800px;margin-bottom:22px&quot;>
+      <div class=&quot;section-card-title&quot;>➕ Ajouter à la collection privée</div>
+      <p style=&quot;font-size:13px;color:var(--text-muted);margin:-4px 0 18px;line-height:1.6&quot;>Ces œuvres apparaissent dans l'onglet « Collection privée » du site, présentées à titre d'exposition — sans prix ni bouton d'achat. Ajoutez-en autant que vous voulez, au fil du temps.</p>
+      <div class=&quot;form-grid&quot;>
+        <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Titre *</label><input class=&quot;form-input&quot; id=&quot;nc-title&quot; placeholder=&quot;Ex : Mon premier tableau&quot; /></div>
+        <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Catégorie</label>
+          <select class=&quot;form-select&quot; id=&quot;nc-cat&quot;>
+            <option value=&quot;epoxy3d&quot;>Acrylique sur Époxy 3D</option>
+            <option value=&quot;acrylique&quot;>Acrylique</option>
+            <option value=&quot;huile&quot;>Huile sur toile</option>
+            <option value=&quot;aquarelle&quot;>Aquarelle</option>
+            <option value=&quot;fusain&quot;>Fusain / Dessin</option>
+          </select>
+        </div>
+        <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Dimensions</label><input class=&quot;form-input&quot; id=&quot;nc-dims&quot; placeholder=&quot;60×80 cm&quot; /></div>
+        <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Année / repère <span class=&quot;form-hint&quot;>(optionnel)</span></label><input class=&quot;form-input&quot; id=&quot;nc-year&quot; placeholder=&quot;Ex : 2023&quot; /></div>
+        <div class=&quot;form-group full&quot;>
+          <label class=&quot;form-label&quot;>📷 Photo de l'œuvre <span class=&quot;form-hint&quot;>(recommandé)</span></label>
+          <div class=&quot;upload-zone&quot; id=&quot;ncUploadZone&quot;>
+            <input type=&quot;file&quot; id=&quot;nc-photo&quot; accept=&quot;image/*&quot; onchange=&quot;handleCollPhoto(event)&quot; />
+            <div>
+              <div class=&quot;upload-icon&quot;>📷</div>
+              <div class=&quot;upload-label&quot;>Glissez une photo ici ou cliquez pour choisir</div>
+              <div class=&quot;upload-hint&quot;>JPG, PNG, WEBP</div>
+            </div>
+            <div id=&quot;ncPhotoPreview&quot; style=&quot;margin-top:10px&quot;></div>
+          </div>
+        </div>
+        <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Emoji <span class=&quot;form-hint&quot;>(si pas de photo)</span></label><input class=&quot;form-input&quot; id=&quot;nc-emoji&quot; value=&quot;🖼️&quot; /></div>
+        <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Fond (gradient CSS)</label><input class=&quot;form-input&quot; id=&quot;nc-gradient&quot; value=&quot;linear-gradient(135deg,#2a1a00,#8c6200,#c9a84c)&quot; /></div>
+        <div class=&quot;form-group full&quot;><label class=&quot;form-label&quot;>Description</label><textarea class=&quot;form-textarea&quot; id=&quot;nc-desc&quot; placeholder=&quot;Quelques mots sur l'œuvre : technique, inspiration, souvenir...&quot; rows=&quot;3&quot;></textarea></div>
+      </div>
+      <div style=&quot;display:flex;gap:12px;flex-wrap:wrap;margin-top:8px&quot;>
+        <button class=&quot;btn btn-primary btn-lg&quot; onclick=&quot;addToCollection()&quot;>🖼️ Ajouter à la collection</button>
+        <button class=&quot;btn btn-glass&quot; onclick=&quot;clearCollForm()&quot;>Réinitialiser</button>
+      </div>
+    </div>
+
+    <div style=&quot;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px&quot;>
+      <div class=&quot;section-card-title&quot; style=&quot;margin:0&quot;>Œuvres de la collection (${items.length})</div>
+    </div>
+    ${items.length===0?`<div class=&quot;empty&quot;><div class=&quot;empty-icon&quot;>🖼️</div><div class=&quot;empty-title&quot;>Aucune œuvre en collection privée</div><div class=&quot;empty-desc&quot;>Ajoutez une première œuvre d'exposition avec le formulaire ci-dessus.</div></div>`:`
+    <div class=&quot;artworks-grid&quot;>
+      ${items.map(a=>`
+        <div class=&quot;artwork-card-admin&quot;>
+          <div class=&quot;artwork-thumb&quot; style=&quot;background:${a.gradient}&quot;>
+            ${thumbHTML(a)}
+            <div style=&quot;position:absolute;top:8px;left:8px;background:rgba(201,168,76,.92);color:#060608;font-size:10px;font-weight:700;letter-spacing:.5px;padding:4px 9px;border-radius:20px&quot;>🖼️ EXPOSITION</div>
+          </div>
+          <div class=&quot;artwork-body&quot;>
+            <div class=&quot;artwork-name&quot;>${a.title}</div>
+            <div class=&quot;artwork-meta&quot;>${getCatLabel(a.category)} · ${a.dimensions||'—'}</div>
+            <div class=&quot;artwork-actions&quot; style=&quot;margin-top:14px&quot;>
+              <button class=&quot;btn btn-sm btn-glass&quot; onclick=&quot;openEditModal(${a.id})&quot; style=&quot;flex:1&quot;>✏️ Modifier</button>
+              <button class=&quot;btn btn-sm btn-glass&quot; onclick=&quot;removeFromCollection(${a.id})&quot; style=&quot;flex:1&quot; title=&quot;La remettre en vente dans la galerie&quot;>↩ En vente</button>
+              <button class=&quot;btn btn-sm btn-danger&quot; onclick=&quot;deleteArtwork(${a.id})&quot;>🗑</button>
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>`}`;
+}
+
+function handleCollPhoto(event) {
+  const file=event.target.files[0]; if(!file) return;
+  const prev=document.getElementById('ncPhotoPreview');
+  if(prev) prev.innerHTML=`<div style=&quot;font-size:12px;color:var(--text-muted)&quot;>⏳ Compression en cours...</div>`;
+  compressImage(file).then(dataUrl => {
+    collPhotoUrl = dataUrl;
+    if(prev) prev.innerHTML=`<img src=&quot;${dataUrl}&quot; style=&quot;width:120px;height:96px;object-fit:cover;border-radius:10px;border:2px solid var(--gold);display:block&quot; /><div style=&quot;font-size:11px;color:var(--green);margin-top:6px&quot;>✓ Photo prête (${Math.round(dataUrl.length/1024)} ko)</div>`;
+  });
+}
+
+function addToCollection() {
+  const title=document.getElementById('nc-title')?.value.trim();
+  if(!title){toast('Le titre est requis','error');return;}
+  const year=document.getElementById('nc-year')?.value.trim();
+  const dims=document.getElementById('nc-dims').value.trim() + (year?(document.getElementById('nc-dims').value.trim()?` · ${year}`:year):'');
+  artworks.push({
+    id:Date.now(),
+    title,
+    category:document.getElementById('nc-cat').value,
+    price:0,
+    dimensions:dims,
+    description:document.getElementById('nc-desc').value,
+    emoji:document.getElementById('nc-emoji').value||'🖼️',
+    gradient:document.getElementById('nc-gradient').value,
+    sold:false,
+    showcase:true,
+    ...(collPhotoUrl?{photo:collPhotoUrl}:{})
+  });
+  save();
+  toast('Œuvre ajoutée à la collection privée ✓','success');
+  clearCollForm();
+  renderPage('collection');
+  updateBadges();
+}
+
+function clearCollForm() {
+  ['nc-title','nc-dims','nc-desc','nc-year'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  const e=document.getElementById('nc-emoji');if(e)e.value='🖼️';
+  const g=document.getElementById('nc-gradient');if(g)g.value='linear-gradient(135deg,#2a1a00,#8c6200,#c9a84c)';
+  const p=document.getElementById('nc-photo');if(p)p.value='';
+  const pp=document.getElementById('ncPhotoPreview');if(pp)pp.innerHTML='';
+  collPhotoUrl=null;
+}
+
+function removeFromCollection(id) {
+  artworks = artworks.map(a=>a.id===id?{...a,showcase:false}:a);
+  save();
+  toast('Œuvre remise dans la galerie de vente','info');
+  renderPage('collection');
+  updateBadges();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -3066,22 +3347,40 @@ function saveHero(){
 
 function renderAboutEditor(){
   const a=siteConfig.about;
+  const sep=(t)=>`<div class=&quot;form-group full&quot; style=&quot;margin-top:8px&quot;><div style=&quot;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--glass-border);padding-bottom:6px&quot;>${t}</div></div>`;
   return `<div class=&quot;section-card&quot; style=&quot;max-width:800px&quot;>
-    <div class=&quot;section-card-title&quot;>👤 Section À propos</div>
+    <div class=&quot;section-card-title&quot;>👤 Section À propos — présentation de l'artiste</div>
     <div class=&quot;form-grid&quot;>
-      ${field('ab-label','Label doré',a.label)}
-      ${field('ab-title','Titre',a.title)}
-      ${fullField('ab-p1','Paragraphe 1',a.p1,'textarea')}
-      ${fullField('ab-p2','Paragraphe 2',a.p2,'textarea')}
-      ${fullField('ab-quote','Citation',a.quote)}
-      ${field('ab-s1n','Stat 1 — Nombre',a.stat1num)} ${field('ab-s1l','Stat 1 — Label',a.stat1lbl)}
-      ${field('ab-s2n','Stat 2 — Nombre',a.stat2num)} ${field('ab-s2l','Stat 2 — Label',a.stat2lbl)}
-      ${field('ab-s3n','Stat 3 — Nombre',a.stat3num)} ${field('ab-s3l','Stat 3 — Label',a.stat3lbl)}
+      ${sep('En-tête')}
+      ${field('ab-label','Label doré (au-dessus du titre)',a.label)}
+      ${field('ab-title','Titre / sous-titre',a.title)}
+      ${fullField('ab-intro1','Introduction — paragraphe 1',a.intro1,'textarea')}
+      ${fullField('ab-intro2','Introduction — paragraphe 2',a.intro2,'textarea')}
+      ${fullField('ab-quote','Citation (encadré sur la photo)',a.quote,'textarea')}
+
+      ${sep('Chapitre 1 — La technique')}
+      ${field('ab-c1title','Titre du chapitre 1',a.c1title)}
+      ${fullField('ab-c1body','Chapitre 1 — texte',a.c1body,'textarea')}
+      ${fullField('ab-c1lines','Chapitre 1 — lignes accentuées (une par ligne)',(a.c1lines||[]).join('\n'),'textarea')}
+      ${fullField('ab-c1body2','Chapitre 1 — texte de fin',a.c1body2,'textarea')}
+
+      ${sep('Chapitre 2 — Le parcours')}
+      ${field('ab-c2title','Titre du chapitre 2',a.c2title)}
+      ${fullField('ab-c2body','Chapitre 2 — texte',a.c2body,'textarea')}
+      ${fullField('ab-c2body2','Chapitre 2 — texte de fin',a.c2body2,'textarea')}
+
+      ${sep('Chapitre 3 — Les émotions')}
+      ${field('ab-c3title','Titre du chapitre 3',a.c3title)}
+      ${fullField('ab-c3body','Chapitre 3 — introduction',a.c3body,'textarea')}
+      ${fullField('ab-c3bullets','Chapitre 3 — puces (une par ligne)',(a.c3bullets||[]).join('\n'),'textarea')}
+      ${fullField('ab-c3body2','Chapitre 3 — conclusion',a.c3body2,'textarea')}
+
+      ${sep('Divers')}
       ${field('ab-btn','Texte du bouton',a.btnLabel)}
       <div class=&quot;form-group full&quot;>
         <label class=&quot;form-label&quot;>Photo de l'artiste</label>
         <div class=&quot;upload-zone&quot;><input type=&quot;file&quot; id=&quot;ab-photo&quot; accept=&quot;image/*&quot; onchange=&quot;handleAboutPhoto(event)&quot; />
-          <div class=&quot;upload-icon&quot;>📷</div><div class=&quot;upload-label&quot;>Photo de Dan (optionnel)</div></div>
+          <div class=&quot;upload-icon&quot;>📷</div><div class=&quot;upload-label&quot;>Photo de Daniel (optionnel)</div></div>
         <div id=&quot;ab-photoPreview&quot; style=&quot;margin-top:10px&quot;>${a.photo?`<img src=&quot;${a.photo}&quot; style=&quot;width:100px;height:100px;object-fit:cover;border-radius:10px;border:2px solid var(--gold)&quot; />`:''}
         ${a.photo?`<button class=&quot;btn btn-sm btn-danger&quot; style=&quot;display:block;margin-top:8px&quot; onclick=&quot;removeAboutPhoto()&quot;>Supprimer la photo</button>`:''}</div>
       </div>
@@ -3103,7 +3402,15 @@ function handleAboutPhoto(e){
 }
 function removeAboutPhoto(){siteConfig.about.photo=null;save();renderPage('about');}
 function saveAbout(){
-  Object.assign(siteConfig.about,{label:v('ab-label'),title:v('ab-title'),p1:v('ab-p1'),p2:v('ab-p2'),quote:v('ab-quote'),stat1num:v('ab-s1n'),stat1lbl:v('ab-s1l'),stat2num:v('ab-s2n'),stat2lbl:v('ab-s2l'),stat3num:v('ab-s3n'),stat3lbl:v('ab-s3l'),btnLabel:v('ab-btn')});
+  const toArr=(id)=>v(id).split('\n').map(s=>s.trim()).filter(Boolean);
+  Object.assign(siteConfig.about,{
+    label:v('ab-label'), title:v('ab-title'),
+    intro1:v('ab-intro1'), intro2:v('ab-intro2'), quote:v('ab-quote'),
+    c1title:v('ab-c1title'), c1body:v('ab-c1body'), c1lines:toArr('ab-c1lines'), c1body2:v('ab-c1body2'),
+    c2title:v('ab-c2title'), c2body:v('ab-c2body'), c2body2:v('ab-c2body2'),
+    c3title:v('ab-c3title'), c3body:v('ab-c3body'), c3bullets:toArr('ab-c3bullets'), c3body2:v('ab-c3body2'),
+    btnLabel:v('ab-btn')
+  });
   save();toast('À propos mis à jour ✓','success');
 }
 
@@ -3166,6 +3473,99 @@ function saveTestimonials(){
   siteConfig.testimonials.label=v('te-label');siteConfig.testimonials.title=v('te-title');
   siteConfig.testimonials.items=siteConfig.testimonials.items.map((_,i)=>({name:document.getElementById(`ti-${i}-name`)?.value||'',date:document.getElementById(`ti-${i}-date`)?.value||'',text:document.getElementById(`ti-${i}-text`)?.value||''}));
   save();toast('Avis mis à jour ✓','success');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STAGES / ATELIERS PEINTURE
+// ═══════════════════════════════════════════════════════════════
+function renderStagesEditor(){
+  const st=siteConfig.stages;
+  const esc=s=>String(s==null?'':s).replace(/&quot;/g,'&amp;quot;');
+  return `<div class=&quot;section-card&quot; style=&quot;max-width:820px&quot;>
+    <div class=&quot;section-card-title&quot;>🖌️ Stages / Ateliers peinture</div>
+
+    <div class=&quot;toggle-row&quot; style=&quot;background:rgba(201,168,76,.06);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:16px 18px;margin-bottom:10px&quot;>
+      <div>
+        <div class=&quot;toggle-label&quot;>Afficher la page « Stages » sur le site</div>
+        <div class=&quot;toggle-sub&quot;>${st.enabled?'✅ La page est <strong style=&quot;color:var(--green)&quot;>visible</strong> par les visiteurs.':'🚫 La page est <strong>masquée</strong>. Activez-la quand vous voulez.'}</div>
+      </div>
+      <label class=&quot;toggle&quot;>
+        <input type=&quot;checkbox&quot; id=&quot;st-enabled&quot; ${st.enabled?'checked':''} onchange=&quot;toggleStagesEnabled(this.checked)&quot; />
+        <span class=&quot;toggle-slider&quot;></span>
+      </label>
+    </div>
+    <p style=&quot;font-size:12px;color:var(--text-muted);margin:0 0 20px&quot;>L'interrupteur s'applique immédiatement. Le reste du contenu se modifie ci-dessous puis « Enregistrer le texte ».</p>
+
+    <div class=&quot;form-grid&quot;>
+      ${field('st-label','Label doré',st.label)}
+      ${field('st-title','Titre de la page',st.title)}
+      ${field('st-intro1','Introduction — paragraphe 1',st.intro1,'textarea','',3)}
+      ${field('st-intro2','Introduction — paragraphe 2',st.intro2,'textarea','',2)}
+    </div>
+
+    <div class=&quot;section-card-title&quot; style=&quot;font-size:15px;margin:24px 0 12px&quot;>Formules proposées</div>
+    <div id=&quot;stagesFormulas&quot; style=&quot;display:flex;flex-direction:column;gap:14px&quot;>
+      ${st.formulas.map((f,i)=>`
+        <div class=&quot;step-editor&quot;>
+          <div class=&quot;step-header&quot;>Formule ${i+1} <button class=&quot;btn btn-sm btn-danger&quot; style=&quot;margin-left:auto&quot; onclick=&quot;removeStageFormula(${i})&quot;>🗑 Supprimer</button></div>
+          <div class=&quot;form-grid&quot;>
+            <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Emoji</label><input class=&quot;form-input&quot; id=&quot;sf-${i}-icon&quot; value=&quot;${esc(f.icon)}&quot; style=&quot;font-size:18px&quot; /></div>
+            <div class=&quot;form-group&quot;><label class=&quot;form-label&quot;>Titre</label><input class=&quot;form-input&quot; id=&quot;sf-${i}-title&quot; value=&quot;${esc(f.title)}&quot; /></div>
+            <div class=&quot;form-group full&quot;><label class=&quot;form-label&quot;>Description</label><textarea class=&quot;form-textarea&quot; id=&quot;sf-${i}-desc&quot; rows=&quot;2&quot;>${f.desc||''}</textarea></div>
+            <div class=&quot;form-group full&quot;><label class=&quot;form-label&quot;>Durée / tarif</label><input class=&quot;form-input&quot; id=&quot;sf-${i}-meta&quot; value=&quot;${esc(f.meta)}&quot; /></div>
+          </div>
+        </div>`).join('')}
+    </div>
+    <button class=&quot;btn btn-glass&quot; style=&quot;margin-top:14px&quot; onclick=&quot;addStageFormula()&quot;>+ Ajouter une formule</button>
+
+    <div class=&quot;form-grid&quot; style=&quot;margin-top:24px&quot;>
+      ${field('st-practicalTitle','Titre du bloc infos pratiques',st.practicalTitle)}
+      ${field('st-practical','Infos pratiques (une ligne = une info)',st.practical,'textarea','',6)}
+      ${field('st-btn','Texte du bouton',st.btnLabel)}
+    </div>
+
+    <div style=&quot;margin-top:22px;display:flex;gap:12px;flex-wrap:wrap&quot;>
+      <button class=&quot;btn btn-primary&quot; onclick=&quot;saveStages()&quot;>✓ Enregistrer le texte</button>
+      <button class=&quot;btn btn-glass&quot; onclick=&quot;resetSection('stages')&quot;>↩ Réinitialiser</button>
+    </div>
+  </div>`;
+}
+function captureStageFields(){
+  const st=siteConfig.stages;
+  st.formulas=st.formulas.map((f,i)=>({
+    icon: document.getElementById('sf-'+i+'-icon')?.value ?? f.icon,
+    title: document.getElementById('sf-'+i+'-title')?.value ?? f.title,
+    desc: document.getElementById('sf-'+i+'-desc')?.value ?? f.desc,
+    meta: document.getElementById('sf-'+i+'-meta')?.value ?? f.meta,
+  }));
+  if(document.getElementById('cf-st-label')) st.label=v('st-label');
+  if(document.getElementById('cf-st-title')) st.title=v('st-title');
+  if(document.getElementById('cf-st-intro1')) st.intro1=v('st-intro1');
+  if(document.getElementById('cf-st-intro2')) st.intro2=v('st-intro2');
+  if(document.getElementById('cf-st-practicalTitle')) st.practicalTitle=v('st-practicalTitle');
+  if(document.getElementById('cf-st-practical')) st.practical=v('st-practical');
+  if(document.getElementById('cf-st-btn')) st.btnLabel=v('st-btn');
+}
+function toggleStagesEnabled(on){
+  siteConfig.stages.enabled=!!on;
+  save();
+  updateBadges();
+  renderPage('stages');
+  toast(on?'Page Stages activée ✓':'Page Stages désactivée','info');
+}
+function addStageFormula(){
+  captureStageFields();
+  siteConfig.stages.formulas.push({icon:'🎨',title:'Nouvelle formule',desc:'Description de la formule...',meta:'Durée · Tarif'});
+  renderPage('stages');
+}
+function removeStageFormula(i){
+  captureStageFields();
+  siteConfig.stages.formulas.splice(i,1);
+  renderPage('stages');
+}
+function saveStages(){
+  captureStageFields();
+  save();toast('Stages mis à jour ✓','success');
 }
 
 function renderCtaEditor(){
@@ -3330,14 +3730,14 @@ document.addEventListener('keydown',e=>{
 <script>
 // ─── DEFAULTS DATA ───────────────────────────────────────────────────
 const DEFAULT_ARTWORKS = [
-  { id: 1, title: 'Vague Océanique', category: 'acrylique', price: 450, dimensions: '60×80 cm', description: "Une œuvre captivante où l'acrylique danse sur la résine époxy translucide. Les vagues semblent vivantes, figées dans un mouvement éternel.", sold: false, emoji: '🌊', gradient: 'linear-gradient(135deg,#1a6b9a,#0d2d5e,#2a9d8f)' },
-  { id: 2, title: 'Cosmos Intérieur', category: 'personnelles', price: 680, dimensions: '80×100 cm', description: "Voyage introspectif à travers les galaxies intérieures. Pigments métalliques et inclusions de feuilles d'or sur résine profonde.", sold: false, emoji: '🌌', gradient: 'linear-gradient(135deg,#1a0533,#3d1458,#6b21a8)' },
-  { id: 3, title: 'Portrait de Marie', category: 'portrait', price: 820, dimensions: '50×70 cm', description: "Portrait réaliste exécuté avec une précision remarquable, sublimé par une finition époxy haute brillance qui donne vie aux émotions.", sold: true, emoji: '👩‍🎨', gradient: 'linear-gradient(135deg,#3d1c1c,#7c3030,#a85050)' },
-  { id: 4, title: 'Souvenir Éternel', category: 'photo', price: 550, dimensions: '40×60 cm', description: "Transformation poétique d'une photographie familiale en tableau époxy. La résine crée une profondeur 3D saisissante.", sold: false, emoji: '📸', gradient: 'linear-gradient(135deg,#2d1b00,#7c5200,#c9a84c)' },
-  { id: 5, title: 'Forêt Enchantée', category: 'acrylique', price: 520, dimensions: '70×90 cm', description: "Sous-bois mystérieux où lumière et ombres jouent à travers les couches de résine translucide.", sold: false, emoji: '🌲', gradient: 'linear-gradient(135deg,#0a2e0a,#1a5c1a,#2d8c2d)' },
-  { id: 6, title: 'Abstraction Dorée', category: 'personnelles', price: 390, dimensions: '50×50 cm', description: "Composition géométrique abstraite avec feuilles d'or réelles incrustées dans la résine.", sold: false, emoji: '✨', gradient: 'linear-gradient(135deg,#2a1a00,#8c6200,#c9a84c)' },
-  { id: 7, title: "Coucher sur l'Atlas", category: 'photo', price: 620, dimensions: '60×80 cm', description: "Photographie montagnarde transcendée par les couches de résine créant un effet de profondeur exceptionnel.", sold: true, emoji: '🏔️', gradient: 'linear-gradient(135deg,#1a1a2e,#16213e,#e94560)' },
-  { id: 8, title: 'Méditerranée', category: 'acrylique', price: 490, dimensions: '80×60 cm', description: "Les bleus méditerranéens capturés dans la résine. Un tableau qui respire la mer et le soleil.", sold: false, emoji: '⛵', gradient: 'linear-gradient(135deg,#003366,#0066cc,#66b3ff)' },
+  { id: 1, title: 'Vague Océanique', category: 'epoxy3d', price: 450, dimensions: '60×80 cm', description: "Une œuvre captivante où l'acrylique danse sur la résine époxy translucide. Les vagues semblent vivantes, figées dans un mouvement éternel.", sold: false, emoji: '🌊', gradient: 'linear-gradient(135deg,#1a6b9a,#0d2d5e,#2a9d8f)' },
+  { id: 2, title: 'Cosmos Intérieur', category: 'acrylique', price: 680, dimensions: '80×100 cm', description: "Voyage introspectif à travers les galaxies intérieures. Pigments métalliques et inclusions de feuilles d'or sur résine profonde.", sold: false, emoji: '🌌', gradient: 'linear-gradient(135deg,#1a0533,#3d1458,#6b21a8)' },
+  { id: 3, title: 'Portrait de Marie', category: 'huile', price: 820, dimensions: '50×70 cm', description: "Portrait réaliste exécuté avec une précision remarquable, sublimé par une finition époxy haute brillance qui donne vie aux émotions.", sold: true, emoji: '👩‍🎨', gradient: 'linear-gradient(135deg,#3d1c1c,#7c3030,#a85050)' },
+  { id: 4, title: 'Souvenir Éternel', category: 'aquarelle', price: 550, dimensions: '40×60 cm', description: "Transformation poétique d'une photographie familiale en tableau époxy. La résine crée une profondeur 3D saisissante.", sold: false, emoji: '📸', gradient: 'linear-gradient(135deg,#2d1b00,#7c5200,#c9a84c)' },
+  { id: 5, title: 'Forêt Enchantée', category: 'fusain', price: 520, dimensions: '70×90 cm', description: "Sous-bois mystérieux où lumière et ombres jouent à travers les couches de résine translucide.", sold: false, emoji: '🌲', gradient: 'linear-gradient(135deg,#0a2e0a,#1a5c1a,#2d8c2d)' },
+  { id: 6, title: 'Abstraction Dorée', category: 'acrylique', price: 390, dimensions: '50×50 cm', description: "Composition géométrique abstraite avec feuilles d'or réelles incrustées dans la résine.", sold: false, emoji: '✨', gradient: 'linear-gradient(135deg,#2a1a00,#8c6200,#c9a84c)' },
+  { id: 7, title: "Coucher sur l'Atlas", category: 'epoxy3d', price: 620, dimensions: '60×80 cm', description: "Photographie montagnarde transcendée par les couches de résine créant un effet de profondeur exceptionnel.", sold: true, emoji: '🏔️', gradient: 'linear-gradient(135deg,#1a1a2e,#16213e,#e94560)' },
+  { id: 8, title: 'Méditerranée', category: 'aquarelle', price: 490, dimensions: '80×60 cm', description: "Les bleus méditerranéens capturés dans la résine. Un tableau qui respire la mer et le soleil.", sold: false, emoji: '⛵', gradient: 'linear-gradient(135deg,#003366,#0066cc,#66b3ff)' },
 ];
 
 const DEFAULT_RESERVATIONS = [
@@ -3354,14 +3754,14 @@ function loadFromStorage() {
     const sc = localStorage.getItem('dan_siteConfig');
     if (a) artworks = JSON.parse(a);
     if (r) reservations = JSON.parse(r);
-    if (sc) Object.assign(siteConfig, JSON.parse(sc));
+    if (sc) { const cfg = JSON.parse(sc); Object.assign(siteConfig, cfg); const sa = cfg.about || {}; siteConfig.about = sa.c1title ? { ...DEFAULT_ABOUT, ...sa } : { ...DEFAULT_ABOUT }; siteConfig.stages = { ...DEFAULT_STAGES, ...(cfg.stages || {}) }; }
   } catch(e) { console.warn('localStorage load error', e); }
 }
 
 // listen for changes from admin panel (same browser, different tab)
 window.addEventListener('storage', (e) => {
-  if (e.key === 'dan_artworks' && e.newValue) { artworks = JSON.parse(e.newValue); if(currentPage==='home'||currentPage==='gallery') renderPage(currentPage); }
-  if (e.key === 'dan_siteConfig' && e.newValue) { Object.assign(siteConfig, JSON.parse(e.newValue)); applyColors(); if(currentPage==='home') renderHome(); }
+  if (e.key === 'dan_artworks' && e.newValue) { artworks = JSON.parse(e.newValue); if(currentPage==='home'||currentPage==='gallery'||currentPage==='collection') renderPage(currentPage); }
+  if (e.key === 'dan_siteConfig' && e.newValue) { const cfg = JSON.parse(e.newValue); Object.assign(siteConfig, cfg); const sa = cfg.about || {}; siteConfig.about = sa.c1title ? { ...DEFAULT_ABOUT, ...sa } : { ...DEFAULT_ABOUT }; siteConfig.stages = { ...DEFAULT_STAGES, ...(cfg.stages || {}) }; applyColors(); applyStagesVisibility(); if(currentPage==='home') renderHome(); if(currentPage==='stages') renderPage('stages'); }
 });
 
 // ─── DATA ────────────────────────────────────────────────────────────
@@ -3370,17 +3770,23 @@ let reservations = [...DEFAULT_RESERVATIONS];
 
 const CATEGORIES = [
   { key: 'all', label: 'Toutes les œuvres', icon: '🎨' },
-  { key: 'acrylique', label: 'Acrylique sur Époxy', icon: '🌊' },
-  { key: 'personnelles', label: 'Créations Personnelles', icon: '✨' },
-  { key: 'portrait', label: 'Portrait Artistique', icon: '👤' },
-  { key: 'photo', label: 'Tableau Photo', icon: '📸' },
+  { key: 'epoxy3d', label: 'Acrylique sur Époxy 3D', icon: '🌊' },
+  { key: 'acrylique', label: 'Acrylique', icon: '🎨' },
+  { key: 'huile', label: 'Huile sur toile', icon: '🖼️' },
+  { key: 'aquarelle', label: 'Aquarelle', icon: '💧' },
+  { key: 'fusain', label: 'Fusain / Dessin', icon: '✏️' },
 ];
 
+// Anciennes catégories -> nouvelles (compat. œuvres déjà enregistrées)
+const CAT_ALIAS = { personnelles: 'acrylique', portrait: 'huile', photo: 'epoxy3d' };
+function normalizeCat(key) { return CAT_ALIAS[key] || key; }
+
 const CATEGORY_INFO = {
-  acrylique: { icon: '🌊', gradient: 'linear-gradient(135deg,#003366 0%,#1a6b9a 50%,#2a9d8f 100%)', count: 3, desc: 'Peintures fluides sur résine époxy' },
-  personnelles: { icon: '✨', gradient: 'linear-gradient(135deg,#1a0533 0%,#6b21a8 50%,#c9a84c 100%)', count: 2, desc: 'Œuvres originales et uniques' },
-  portrait: { icon: '👤', gradient: 'linear-gradient(135deg,#2d1b00 0%,#7c3030 50%,#a85050 100%)', count: 1, desc: 'Portraits réalistes haute définition' },
-  photo: { icon: '📸', gradient: 'linear-gradient(135deg,#2d1b00 0%,#7c5200 50%,#c9a84c 100%)', count: 2, desc: 'Vos photos en tableaux époxy' },
+  epoxy3d:   { icon: '🌊', gradient: 'linear-gradient(135deg,#003366 0%,#1a6b9a 50%,#2a9d8f 100%)', desc: 'Peinture en relief 3D sur résine époxy' },
+  acrylique: { icon: '🎨', gradient: 'linear-gradient(135deg,#1a0533 0%,#6b21a8 50%,#c9a84c 100%)', desc: 'Acrylique sur toile, couleurs vives' },
+  huile:     { icon: '🖼️', gradient: 'linear-gradient(135deg,#2d1b00 0%,#7c3030 50%,#a85050 100%)', desc: 'Huile sur toile, matière et profondeur' },
+  aquarelle: { icon: '💧', gradient: 'linear-gradient(135deg,#0a3d62 0%,#3c93c2 50%,#a7d3e8 100%)', desc: 'Aquarelle, transparence et légèreté' },
+  fusain:    { icon: '✏️', gradient: 'linear-gradient(135deg,#1a1a1a 0%,#3d3d3d 50%,#7a7a7a 100%)', desc: 'Fusain et dessins, noir et blanc' },
 };
 
 // ─── STATE ──────────────────────────────────────────────────────────
@@ -3389,15 +3795,18 @@ let currentPage = 'home';
 let galleryFilter = 'all';
 let selectedArtwork = null;
 let menuOpen = false;
+let aboutExpanded = false;
 let confirmationOrder = null;
 let toastIdCounter = 0;
 
 // ─── UTILS ──────────────────────────────────────────────────────────
 function fmt(n) { return n.toLocaleString('fr-FR') + ' €'; }
-function getCategoryLabel(key) { return (CATEGORIES.find(c => c.key === key) || {}).label || key; }
+function getCategoryLabel(key) { const k = normalizeCat(key); return (CATEGORIES.find(c => c.key === k) || {}).label || key; }
 
 // ─── NAVIGATION ─────────────────────────────────────────────────────
 function go(page) {
+  // Page "Stages" désactivée : on redirige vers l'accueil
+  if (page === 'stages' && !(siteConfig.stages && siteConfig.stages.enabled)) page = 'home';
   currentPage = page;
   menuOpen = false;
   updateMenu();
@@ -3414,6 +3823,8 @@ function go(page) {
 function renderPage(page) {
   if (page === 'home') renderHome();
   else if (page === 'gallery') renderGallery();
+  else if (page === 'collection') renderCollection();
+  else if (page === 'stages') renderStages();
   else if (page === 'cart') renderCart();
   else if (page === 'checkout') renderCheckout();
 }
@@ -3485,7 +3896,8 @@ function renderGallery() {
     </button>
   `).join('');
 
-  const filtered = galleryFilter === 'all' ? artworks : artworks.filter(a => a.category === galleryFilter);
+  const sellable = artworks.filter(a => !a.showcase);
+  const filtered = galleryFilter === 'all' ? sellable : sellable.filter(a => normalizeCat(a.category) === galleryFilter);
   document.getElementById('galleryCount').textContent = `${filtered.length} œuvre${filtered.length > 1 ? 's' : ''}`;
   const emptyEl = document.getElementById('galleryEmpty');
   const gridEl = document.getElementById('galleryGrid');
@@ -3501,6 +3913,112 @@ function renderGallery() {
 function setFilter(key) {
   galleryFilter = key;
   renderGallery();
+}
+
+// ─── À PROPOS : dérouler / réduire ───────────────────────────────────
+function toggleAboutMore() {
+  aboutExpanded = !aboutExpanded;
+  const more = document.getElementById('aboutMore');
+  const label = document.getElementById('aboutToggleLabel');
+  const btn = document.getElementById('aboutToggle');
+  const icon = btn ? btn.querySelector('.about-toggle-icon') : null;
+  if (more) more.classList.toggle('open', aboutExpanded);
+  if (label) label.textContent = aboutExpanded ? 'Réduire' : "En savoir plus sur l'artiste";
+  if (icon) icon.style.transform = aboutExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+  if (btn) btn.setAttribute('aria-expanded', aboutExpanded ? 'true' : 'false');
+  if (aboutExpanded && more) {
+    more.scrollTop = 0;
+    setTimeout(() => more.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 120);
+  }
+}
+
+// ─── COLLECTION PRIVÉE (exposition sans vente) ───────────────────────
+function renderCollection() {
+  const items = artworks.filter(a => a.showcase);
+  const countEl = document.getElementById('collectionCount');
+  if (countEl) countEl.textContent = `${items.length} œuvre${items.length > 1 ? 's' : ''} exposée${items.length > 1 ? 's' : ''}`;
+  const emptyEl = document.getElementById('collectionEmpty');
+  const gridEl = document.getElementById('collectionGrid');
+  if (items.length === 0) {
+    emptyEl.classList.remove('hidden');
+    gridEl.innerHTML = '';
+  } else {
+    emptyEl.classList.add('hidden');
+    gridEl.innerHTML = items.map(a => collectionCardHTML(a)).join('');
+  }
+}
+
+function collectionCardHTML(a) {
+  const thumbContent = a.photo
+    ? `<img src="${a.photo}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />`
+    : a.emoji;
+  return `
+    <div class="artwork-card" onclick="openModal(${a.id})">
+      <div class="artwork-img-wrap">
+        <div class="artwork-thumb" style="background:${a.gradient};position:relative">${thumbContent}</div>
+        <div class="artwork-sold-badge" style="background:rgba(201,168,76,0.9);color:#060608">Collection privée</div>
+        <div class="artwork-overlay">
+          <div class="artwork-overlay-btns" onclick="event.stopPropagation()">
+            <button class="btn btn-glass btn-sm" onclick="openModal(${a.id})">Voir l'œuvre</button>
+          </div>
+        </div>
+      </div>
+      <div class="artwork-info">
+        <div class="artwork-category">${getCategoryLabel(a.category)}</div>
+        <div class="artwork-title">${a.title}</div>
+        <div class="artwork-dims">${a.dimensions}</div>
+        <div class="artwork-footer">
+          <div class="artwork-price" style="font-size:13px;color:var(--gold)">Non disponible à la vente</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── STAGES / ATELIERS ────────────────────────────────────────────────
+function applyStagesVisibility() {
+  const li = document.getElementById('navStagesLi');
+  const on = !!(siteConfig.stages && siteConfig.stages.enabled);
+  if (li) li.style.display = on ? '' : 'none';
+  // Si la page est ouverte alors qu'elle vient d'être désactivée, on renvoie à l'accueil
+  if (!on && currentPage === 'stages') go('home');
+}
+
+function renderStages() {
+  const st = siteConfig.stages || {};
+  const cont = document.getElementById('stagesContent');
+  if (!cont) return;
+  if (!st.enabled) { go('home'); return; }
+  const formulas = (st.formulas || []).map(f => `
+    <div class="stage-card">
+      <div class="stage-card-icon">${f.icon || '🎨'}</div>
+      <h3 class="stage-card-title">${f.title || ''}</h3>
+      <p class="stage-card-desc">${f.desc || ''}</p>
+      <div class="stage-card-meta">${f.meta || ''}</div>
+    </div>`).join('');
+  const practical = (st.practical || '').split('\n').map(l => l.trim()).filter(Boolean)
+    .map(l => `<li>${l}</li>`).join('');
+  cont.innerHTML = `
+    <div class="page-header">
+      <p class="section-label">${st.label || 'Ateliers & Stages'}</p>
+      <h1 class="page-title">${st.title || ''}</h1>
+    </div>
+    <div class="section" style="padding-top:0">
+      <div class="stages-intro">
+        ${st.intro1 ? `<p>${st.intro1}</p>` : ''}
+        ${st.intro2 ? `<p>${st.intro2}</p>` : ''}
+      </div>
+      ${formulas ? `<div class="stages-grid">${formulas}</div>` : ''}
+      ${practical ? `
+        <div class="stages-practical glass">
+          <h3 class="stages-practical-title">${st.practicalTitle || 'Infos pratiques'}</h3>
+          <ul class="stages-practical-list">${practical}</ul>
+        </div>` : ''}
+      <div style="text-align:center;margin-top:44px">
+        <button class="btn btn-primary btn-lg" onclick="go('reservation')">${st.btnLabel || 'Réserver un stage →'}</button>
+      </div>
+      </div>
+    </div>`;
 }
 
 // ─── ARTWORK CARD ─────────────────────────────────────────────────────
@@ -3573,11 +4091,25 @@ function openModal(id) {
   document.getElementById('modalDims').textContent = '📐 ' + a.dimensions + ' · Résine époxy et acrylique';
   document.getElementById('modalDesc').textContent = a.description;
   const priceEl = document.getElementById('modalPrice');
+  const actionsEl = document.getElementById('modalActions');
+  actionsEl.innerHTML = '';
+
+  if (a.showcase) {
+    priceEl.className = 'modal-price';
+    priceEl.style.fontSize = '22px';
+    priceEl.style.color = 'var(--gold)';
+    priceEl.textContent = '🖼️ Collection privée';
+    actionsEl.innerHTML = '<div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:14px 18px;font-size:13px;color:var(--text-muted);line-height:1.6">Cette œuvre fait partie de la collection privée et n\'est <strong style="color:var(--text)">pas disponible à la vente</strong>. Elle est présentée à titre d\'exposition.</div>';
+    document.getElementById('artworkModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    return;
+  }
+
+  priceEl.style.fontSize = '';
+  priceEl.style.color = '';
   priceEl.className = 'modal-price' + (a.sold ? ' sold' : '');
   priceEl.textContent = a.sold ? '🔴 Œuvre vendue' : fmt(a.price);
 
-  const actionsEl = document.getElementById('modalActions');
-  actionsEl.innerHTML = '';
   if (!a.sold) {
     if (hasStripe && a.stripeLink) {
       // Primary: Stripe direct payment
@@ -3723,8 +4255,8 @@ function renderConfirmation() {
 
 // ─── RESERVATION ─────────────────────────────────────────────────────
 function checkPhotoNotice() {
-  const type = document.getElementById('res-type').value;
-  document.getElementById('photoNotice').classList.toggle('hidden', type !== 'photo');
+  const el = document.getElementById('photoNotice');
+  if (el) el.classList.remove('hidden');
 }
 
 async function submitReservation() {
@@ -3789,15 +4321,23 @@ let siteConfig = {
     btn2: 'Commande sur mesure',
   },
   about: {
-    label: "L'artiste",
-    title: 'Passion pour la résine époxy',
-    p1: "Artiste autodidacte, Dan crée des œuvres uniques alliant la fluidité de la peinture acrylique à la profondeur envoûtante de la résine époxy.",
-    p2: "Chaque tableau est une invitation au voyage – dans les profondeurs marines, les galaxies lointaines, ou dans vos plus beaux souvenirs photographiques.",
-    quote: "Chaque goutte de résine est une fenêtre vers un autre monde.",
-    stat1num: '+120', stat1lbl: 'Œuvres créées',
-    stat2num: '+80',  stat2lbl: 'Clients satisfaits',
-    stat3num: '5★',  stat3lbl: 'Avis clients',
-    btnLabel: 'Commander une œuvre →',
+    label: "À propos — Dan Atelier 3D",
+    title: "Un artiste immersif enraciné en Provence",
+    intro1: "Je suis Daniel, artiste plasticien installé à Cavaillon, créateur d'une peinture immersive en relief 3D. Mon travail explore la rencontre entre l'acrylique, l'époxy et la matière, pour donner naissance à des œuvres qui ne se regardent pas seulement : elles se vivent.",
+    intro2: "Chaque tableau est une immersion sensorielle, une profondeur qui invite le regard à entrer dans la couleur, à suivre les reliefs, à ressentir la lumière.",
+    quote: "Je ne cherche pas à reproduire le réel, mais à révéler ce qui se passe derrière lui.",
+    c1title: "Une technique singulière : la peinture qui sort du cadre",
+    c1body: "Mon approche repose sur une technique émergente mêlant couches d'époxy, pigments, acrylique et modelage.",
+    c1lines: ["Le relief devient un langage.", "La matière devient une émotion.", "La couleur devient un espace."],
+    c1body2: "Cette dimension tridimensionnelle crée une présence unique : les œuvres changent selon l'angle, la lumière, et même l'humeur de celui qui les contemple.",
+    c2title: "Un parcours entre tradition et innovation",
+    c2body: "Inspiré par les maîtres de la couleur — notamment Van Gogh, dont j'explore les vibrations dans une série en relief — je développe une écriture picturale personnelle, ancrée dans les paysages de Provence et dans l'énergie brute des pigments naturels, dont ceux des ocres de Roussillon.",
+    c2body2: "Mon travail est à la croisée de l'art contemporain, de la matière, et de l'expérience sensorielle. Il s'adresse à celles et ceux qui cherchent une œuvre vivante, tactile, émotionnelle.",
+    c3title: "Créer des émotions, pas seulement des tableaux",
+    c3body: "Chaque création est une rencontre :",
+    c3bullets: ["entre la lumière et la profondeur,", "entre la matière et le mouvement,", "entre votre histoire et la mienne."],
+    c3body2: "Mon objectif n'est pas de reproduire le réel, mais de révéler ce qui se passe derrière lui — ce qui touche, ce qui remue, ce qui reste.",
+    btnLabel: "Commander une œuvre →",
     photo: null,
   },
   process: {
@@ -3826,6 +4366,21 @@ let siteConfig = {
     btn1: 'Voir la galerie',
     btn2: 'Réserver une création',
   },
+  stages: {
+    enabled: false,
+    label: "Ateliers & Stages",
+    title: "Apprenez la peinture en relief à mes côtés",
+    intro1: "Je propose des stages et ateliers de peinture dans mon atelier, pour découvrir ma technique immersive mêlant acrylique, époxy et matière. Que vous soyez débutant curieux ou peintre confirmé, chaque séance est un moment de création guidé, dans une ambiance conviviale.",
+    intro2: "Repartez avec votre propre œuvre en relief et de nouvelles techniques à explorer chez vous.",
+    formulas: [
+      { icon: '🎨', title: "Atelier découverte", desc: "Une première approche de la peinture en relief : gestes de base, jeu des matières et des couleurs. Idéal pour s'initier.", meta: "2h · à partir de 45 €" },
+      { icon: '🖌️', title: "Stage perfectionnement", desc: "Une journée complète pour approfondir la technique époxy, la profondeur et la composition, avec un accompagnement personnalisé.", meta: "1 journée · à partir de 120 €" },
+      { icon: '👧', title: "Atelier enfants & familles", desc: "Un moment créatif et ludique adapté aux plus jeunes, pour peindre et manipuler la matière en toute sécurité.", meta: "1h30 · à partir de 30 €" },
+    ],
+    practicalTitle: "Infos pratiques",
+    practical: "📍 Atelier à Cavaillon (Provence)\n🎨 Matériel et tabliers fournis\n👥 Groupes de 2 à 6 personnes\n📅 Sur réservation, en semaine ou le week-end\n🚗 Parking à proximité",
+    btnLabel: "Réserver un stage →",
+  },
   colors: {
     gold: '#c9a84c',
     bg: '#060608',
@@ -3844,11 +4399,15 @@ let siteConfig = {
   }
 };
 
+// Copie de référence du contenu "À propos" par défaut (pour compat. anciennes configs)
+const DEFAULT_ABOUT = JSON.parse(JSON.stringify(siteConfig.about));
+const DEFAULT_STAGES = JSON.parse(JSON.stringify(siteConfig.stages));
+
 // ── HOME RENDERER (driven by siteConfig) ──
 function renderHome() {
   const c = siteConfig;
   const sc = c.sections;
-  const featured = artworks.filter(a => !a.sold).slice(0, 3);
+  const featured = artworks.filter(a => !a.sold && !a.showcase).slice(0, 3);
 
   let html = '';
 
@@ -3901,31 +4460,61 @@ function renderHome() {
     const photoHtml = ab.photo
       ? `<img src="${ab.photo}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" />`
       : `<div class="about-img-placeholder">🎨</div>`;
+    const c1lines = (ab.c1lines || []).map(l => `<span class="about-line">${l}</span>`).join('');
+    const c3bullets = (ab.c3bullets || []).map(b => `<li>${b}</li>`).join('');
     html += `
-    <section class="section" style="padding-top:0">
-      <div class="about-grid">
-        <div class="about-text">
-          <p class="section-label">${ab.label}</p>
-          <h2>Passion pour la <em style="color:var(--gold);font-style:italic">résine époxy</em></h2>
-          <div class="divider" style="margin:16px 0"></div>
-          <p>${ab.p1}</p>
-          <p>${ab.p2}</p>
-          <div class="about-stats">
-            <div><div class="about-stat-num">${ab.stat1num}</div><div class="about-stat-label">${ab.stat1lbl}</div></div>
-            <div><div class="about-stat-num">${ab.stat2num}</div><div class="about-stat-label">${ab.stat2lbl}</div></div>
-            <div><div class="about-stat-num">${ab.stat3num}</div><div class="about-stat-label">${ab.stat3lbl}</div></div>
+    <section class="section about-section" style="padding-top:0">
+      <div class="about-card">
+        <div class="about-intro-grid">
+          <div class="about-intro-text">
+            <p class="section-label">${ab.label}</p>
+            <h2 class="about-headline">${ab.title}</h2>
+            <div class="divider" style="margin:18px 0 24px"></div>
+            <p>${ab.intro1}</p>
+            <p>${ab.intro2}</p>
+            <div style="margin-top:28px">
+              <button class="btn btn-outline" onclick="go('reservation')">${ab.btnLabel}</button>
+            </div>
           </div>
-          <div style="margin-top:32px">
-            <button class="btn btn-outline" onclick="go('reservation')">${ab.btnLabel}</button>
+          <div class="about-img-wrap" style="position:relative">
+            ${photoHtml}
+            <div style="position:absolute;bottom:20px;left:20px;right:20px;z-index:1">
+              <div class="glass" style="padding:16px 20px">
+                <div style="font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--text);line-height:1.5">"${ab.quote}"</div>
+                <div style="font-size:12px;color:var(--gold);margin-top:8px;font-weight:500">— Daniel, Dan Atelier 3D</div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="about-img-wrap" style="position:relative">
-          ${photoHtml}
-          <div style="position:absolute;bottom:20px;left:20px;right:20px;z-index:1">
-            <div class="glass" style="padding:16px 20px">
-              <div style="font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--text-muted);line-height:1.5">"${ab.quote}"</div>
-              <div style="font-size:12px;color:var(--gold);margin-top:8px;font-weight:500">— Dan, Artiste</div>
-            </div>
+
+        <div class="about-toggle-wrap">
+          <button class="about-toggle" id="aboutToggle" onclick="toggleAboutMore()" aria-expanded="${aboutExpanded ? 'true' : 'false'}">
+            <span id="aboutToggleLabel">${aboutExpanded ? "Réduire" : "En savoir plus sur l'artiste"}</span>
+            <span class="about-toggle-icon" style="transform:rotate(${aboutExpanded ? '180deg' : '0deg'})">▾</span>
+          </button>
+        </div>
+
+        <div class="about-more${aboutExpanded ? ' open' : ''}" id="aboutMore">
+          <div class="about-chapters">
+            <article class="about-chapter">
+              <h3 class="about-chapter-title">${ab.c1title}</h3>
+              <p>${ab.c1body}</p>
+              <div class="about-lines">${c1lines}</div>
+              <p>${ab.c1body2}</p>
+            </article>
+
+            <article class="about-chapter">
+              <h3 class="about-chapter-title">${ab.c2title}</h3>
+              <p>${ab.c2body}</p>
+              <p>${ab.c2body2}</p>
+            </article>
+
+            <article class="about-chapter">
+              <h3 class="about-chapter-title">${ab.c3title}</h3>
+              <p>${ab.c3body}</p>
+              <ul class="about-bullets">${c3bullets}</ul>
+              <p class="about-closing">${ab.c3body2}</p>
+            </article>
           </div>
         </div>
       </div>
@@ -4378,23 +4967,26 @@ document.addEventListener('keydown', e => {
 function renderCategories() {
   const grid = document.getElementById('categoriesGrid');
   if (!grid) return;
-  grid.innerHTML = Object.entries(CATEGORY_INFO).map(([key, val]) => `
-    <div class="category-card" onclick="go('gallery')">
+  grid.innerHTML = Object.entries(CATEGORY_INFO).map(([key, val]) => {
+    const count = artworks.filter(a => !a.showcase && normalizeCat(a.category) === key).length;
+    return `
+    <div class="category-card" onclick="setFilter('${key}');go('gallery')">
       <div class="category-card-bg" style="background:${val.gradient}"></div>
       <div class="category-card-overlay"></div>
       <div class="category-card-arrow">↗</div>
       <div class="category-card-glass">
         <span class="category-card-icon">${val.icon}</span>
         <div class="category-card-title">${getCategoryLabel(key)}</div>
-        <div class="category-card-count">${val.count} oeuvres · ${val.desc}</div>
+        <div class="category-card-count">${count} œuvre${count > 1 ? 's' : ''} · ${val.desc}</div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 applyColors();
 loadFromStorage();
 applyColors();
+applyStagesVisibility();
 go('home');
 </script>
 </body>
