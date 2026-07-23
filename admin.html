@@ -103,6 +103,24 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .form-input::placeholder{color:rgba(240,237,232,.3)}
 .form-select option{background:#1a1a1f;color:var(--text)}
 .form-textarea{resize:vertical;min-height:90px}
+/* ── Éditeur de texte enrichi (type Word) ── */
+.rich-wrap{border:1px solid var(--glass-border);border-radius:var(--radius-sm);background:rgba(255,255,255,.03);overflow:hidden}
+.rich-toolbar{display:flex;gap:4px;flex-wrap:wrap;padding:6px 8px;border-bottom:1px solid var(--glass-border);background:rgba(255,255,255,.02)}
+.rich-btn{border:1px solid var(--glass-border);background:transparent;color:var(--text);border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;line-height:1.4}
+.rich-btn:hover{border-color:var(--gold);color:var(--gold)}
+.rich-editor{min-height:110px;max-height:320px;overflow-y:auto;padding:12px 14px;outline:none;font-size:14px;line-height:1.65;color:var(--text)}
+.rich-editor:focus{background:rgba(201,168,76,.04)}
+.rich-editor:empty:before{content:attr(data-ph);color:var(--text-muted);opacity:.55}
+.rich-editor ul,.rich-editor ol{margin:6px 0 6px 22px}
+.rich-editor b,.rich-editor strong{color:var(--gold)}
+/* ── Grille de photos multiples ── */
+.photos-grid{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.photo-tile{position:relative;width:112px}
+.photo-tile img{width:112px;height:86px;object-fit:cover;border-radius:8px;border:2px solid var(--glass-border);display:block}
+.photo-tile.cover img{border-color:var(--gold)}
+.photo-tile .pt-del{position:absolute;top:-7px;right:-7px;width:22px;height:22px;border-radius:50%;border:none;background:var(--red,#e05252);color:#fff;font-size:12px;cursor:pointer;line-height:1}
+.photo-tile .pt-star{position:absolute;bottom:6px;left:6px;border:none;border-radius:6px;background:rgba(0,0,0,.65);color:#fff;font-size:11px;padding:2px 7px;cursor:pointer}
+.photo-tile .pt-cover{position:absolute;bottom:6px;left:6px;border-radius:6px;background:rgba(201,168,76,.92);color:#060608;font-size:10px;font-weight:700;padding:2px 7px}
 
 /* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:50px;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all .3s;font-family:'Inter',sans-serif;position:relative;overflow:hidden}
@@ -377,7 +395,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         </div>
         <div class="topbar-actions">
           <div class="save-indicator" id="saveIndicator">✓ Sauvegardé</div>
-          <button class="btn btn-glass btn-sm" onclick="syncNow()">🔄 Synchroniser</button>
+          <button class="btn btn-primary btn-sm" onclick="publishOnline()" title="Envoie les œuvres et le contenu sur le serveur — visible sur tous les appareils">🌐 Publier en ligne</button>
+          <button class="btn btn-glass btn-sm" onclick="pullEvents()" title="Récupère les commandes / réservations passées par les visiteurs">📥 Relever</button>
         </div>
       </div>
       <div class="page-content" id="pageContent"></div>
@@ -415,7 +434,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       </div>
       <div class="form-group"><label class="form-label">Emoji</label><input class="form-input" id="em-emoji" /></div>
       <div class="form-group full"><label class="form-label">Gradient CSS <span class="form-hint">(couleur de fond si pas de photo)</span></label><input class="form-input" id="em-gradient" /></div>
-      <div class="form-group full"><label class="form-label">Description</label><textarea class="form-textarea" id="em-desc" rows="4"></textarea></div>
+      <div class="form-group full"><label class="form-label">Description <span class="form-hint">(gras, italique, listes, retours à la ligne…)</span></label><div id="em-desc-wrap"></div></div>
       <div class="form-group full">
         <label style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:rgba(201,168,76,.06);border:1px solid var(--glass-border);border-radius:var(--radius-sm);cursor:pointer">
           <input type="checkbox" id="em-showcase" style="width:18px;height:18px;margin-top:2px;accent-color:var(--gold);cursor:pointer" />
@@ -426,11 +445,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         </label>
       </div>
       <div class="form-group full">
-        <label class="form-label">Photo <span class="form-hint">(remplace l'emoji)</span></label>
+        <label class="form-label">Photos <span class="form-hint">(plusieurs possibles — la 1re sert de couverture)</span></label>
         <div class="upload-zone">
-          <input type="file" id="em-photo" accept="image/*" onchange="handleEmPhoto(event)" />
+          <input type="file" id="em-photo" accept="image/*" multiple onchange="handleEmPhoto(event)" />
           <div class="upload-icon">📷</div>
-          <div class="upload-label">Cliquez ou glissez une photo</div>
+          <div class="upload-label">Cliquez ou glissez une ou plusieurs photos</div>
         </div>
         <div id="em-photoPreview" style="margin-top:10px"></div>
       </div>
@@ -490,9 +509,9 @@ const DEFAULT_CONFIG = {
 let artworks, reservations, orders, siteConfig, clients;
 let currentPage = 'dashboard';
 let editingId = null;
-let emPhotoUrl = null;
-let addPhotoUrl = null;
-let collPhotoUrl = null;
+let emPhotos = [];
+let addPhotos = [];
+let collPhotos = [];
 let artworkFilter = 'all';
 let statusFilter = 'all';
 let orderFilter = 'all';
@@ -524,6 +543,7 @@ function normalizeCat(k){ return CAT_ALIAS[k] || k; }
 // STORAGE
 // ═══════════════════════════════════════════════════════════════
 function save() {
+  localStorage.setItem('dan_lastEdit', new Date().toISOString());
   localStorage.setItem('dan_artworks', JSON.stringify(artworks));
   localStorage.setItem('dan_reservations', JSON.stringify(reservations));
   localStorage.setItem('dan_orders', JSON.stringify(orders));
@@ -636,9 +656,107 @@ function syncClientsFromData() {
   clients.sort((a,b) => (b.lastActivity||'').localeCompare(a.lastActivity||''));
 }
 
-function syncNow() {
+// ═══════════════════════════════════════════════════════════════
+// PUBLICATION EN LIGNE (synchronisation multi-appareils)
+// localStorage ne vit que sur CE navigateur : pour que les visiteurs
+// voient les modifications, on publie un fichier data.json sur le
+// serveur via save-data.php. Le site vitrine le recharge à l'ouverture.
+// ═══════════════════════════════════════════════════════════════
+function buildPayload() {
+  return { publishedAt: new Date().toISOString(), artworks, siteConfig };
+}
+
+function getPublishKey(force) {
+  let k = localStorage.getItem('dan_publish_key') || '';
+  if (!k || force) {
+    k = prompt('Clé de publication (celle définie dans save-data.php sur le serveur) :', k) || '';
+    if (k) localStorage.setItem('dan_publish_key', k);
+  }
+  return k;
+}
+
+async function publishOnline() {
   save();
-  toast('Synchronisé avec le site ✓', 'success');
+  const payload = buildPayload();
+  const key = getPublishKey();
+  if (!key) { toast('Publication annulée — aucune clé saisie', 'error'); return; }
+  try {
+    const r = await fetch('save-data.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Publish-Key': key },
+      body: JSON.stringify(payload),
+    });
+    if (r.status === 403) { localStorage.removeItem('dan_publish_key'); throw new Error('Clé refusée par le serveur'); }
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    localStorage.setItem('dan_publishedAt', payload.publishedAt);
+    toast('✅ Publié en ligne — les modifications sont visibles sur tous les appareils', 'success');
+  } catch (e) {
+    console.warn('Publication impossible :', e);
+    downloadDataJson(payload);
+    toast('⚠️ Serveur injoignable — data.json téléchargé : envoyez-le par FTP à côté de index.html', 'error');
+  }
+}
+
+function downloadDataJson(payload) {
+  const blob = new Blob([JSON.stringify(payload || buildPayload())], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'data.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+
+// Au démarrage : si une version publiée plus récente existe (modifiée
+// depuis un autre appareil), on l'importe dans cet admin.
+async function checkRemoteData() {
+  try {
+    const r = await fetch('data.json?ts=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) return;
+    const d = await r.json();
+    if (!d || !d.publishedAt) return;
+    const lastEdit = localStorage.getItem('dan_lastEdit') || '';
+    if (lastEdit && lastEdit >= d.publishedAt) return; // le local est plus récent
+    if (Array.isArray(d.artworks)) artworks = d.artworks;
+    if (d.siteConfig) {
+      siteConfig = { ...siteConfig, ...d.siteConfig };
+    }
+    save();
+    localStorage.setItem('dan_publishedAt', d.publishedAt);
+    renderPage(currentPage);
+    updateBadges();
+    toast('☁️ Données publiées en ligne chargées ✓', 'info');
+  } catch (e) { /* pas de data.json : normal en local */ }
+}
+
+// Récupère les commandes / réservations / clients laissés par les
+// visiteurs (stockés côté serveur dans events.json via save-data.php).
+async function pullEvents() {
+  const key = getPublishKey();
+  if (!key) { toast('Relevé annulé — aucune clé saisie', 'error'); return; }
+  try {
+    const r = await fetch('save-data.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Publish-Key': key },
+      body: JSON.stringify({ action: 'pull_events' }),
+    });
+    if (r.status === 403) { localStorage.removeItem('dan_publish_key'); throw new Error('Clé refusée'); }
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const list = await r.json();
+    let n = 0;
+    (Array.isArray(list) ? list : []).forEach(ev => {
+      if (!ev || !ev.data) return;
+      if (ev.type === 'order' && !orders.some(o => o.id === ev.data.id)) { orders.unshift(ev.data); n++; }
+      if (ev.type === 'reservation' && !reservations.some(x => x.id === ev.data.id)) { reservations.push(ev.data); n++; }
+      if (ev.type === 'client' && ev.data.email && !clients.some(c => c.email === ev.data.email)) { clients.push(ev.data); n++; }
+    });
+    syncClientsFromData();
+    save();
+    updateBadges();
+    renderPage(currentPage);
+    toast(n ? `📥 ${n} nouveauté(s) récupérée(s) ✓` : 'Aucune nouvelle commande / réservation', n ? 'success' : 'info');
+  } catch (e) {
+    toast('Relevé impossible — vérifiez que save-data.php est sur le serveur et que la clé est bonne', 'error');
+  }
 }
 
 function showSaved() {
@@ -660,6 +778,7 @@ function doLogin() {
     loadAll();
     showPage('dashboard');
     toast('Bienvenue Dan 👋', 'success');
+    checkRemoteData();
   } else {
     toast('Identifiants incorrects', 'error');
   }
@@ -694,8 +813,8 @@ function renderPage(p) {
   const c = document.getElementById('pageContent');
   if (p === 'dashboard') c.innerHTML = renderDashboard();
   else if (p === 'artworks') c.innerHTML = renderArtworks();
-  else if (p === 'add') { c.innerHTML = renderAdd(); addPhotoUrl = null; }
-  else if (p === 'collection') { c.innerHTML = renderCollectionAdmin(); collPhotoUrl = null; }
+  else if (p === 'add') { c.innerHTML = renderAdd(); addPhotos = []; }
+  else if (p === 'collection') { c.innerHTML = renderCollectionAdmin(); collPhotos = []; }
   else if (p === 'clients') c.innerHTML = renderClients();
   else if (p === 'clientProfile') c.innerHTML = renderClientProfile(selectedClientId);
   else if (p === 'stripe') c.innerHTML = renderStripe();
@@ -762,9 +881,71 @@ function compressImage(file, maxW=1200, quality=0.82) {
   });
 }
 
+// ── Éditeur de texte enrichi (gras, italique, listes… comme Word) ──
+function escHTML(t){return String(t??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function toRichHTML(v){ v=String(v??''); if(!v) return ''; if(/<[a-z][\s\S]*>/i.test(v)) return v; return escHTML(v).replace(/\n/g,'<br>'); }
+function cleanRich(h){ return String(h??'').replace(/<script[\s\S]*?<\/script>/gi,'').replace(/\son\w+\s*=\s*"[^"]*"/gi,'').replace(/\son\w+\s*=\s*'[^']*'/gi,''); }
+function richEditor(id, value='', ph='Votre texte…'){
+  const btns=[
+    ['<b>G</b>','bold','Gras'],
+    ['<i>I</i>','italic','Italique'],
+    ['<u>S</u>','underline','Souligné'],
+    ['• Liste','insertUnorderedList','Liste à puces'],
+    ['1. Liste','insertOrderedList','Liste numérotée'],
+    ['⌫ Format','removeFormat','Effacer la mise en forme'],
+  ];
+  return `<div class="rich-wrap"><div class="rich-toolbar">${btns.map(b=>
+    `<button type="button" class="rich-btn" title="${b[2]}" onmousedown="event.preventDefault();richCmd('${id}','${b[1]}')">${b[0]}</button>`).join('')}
+  </div><div class="rich-editor" id="${id}" contenteditable="true" data-ph="${ph}">${toRichHTML(value)}</div></div>`;
+}
+function richCmd(id, cmd){ const el=document.getElementById(id); if(!el) return; el.focus(); document.execCommand(cmd, false, null); }
+function richVal(id){
+  const el=document.getElementById(id); if(!el) return '';
+  if(!el.textContent.trim() && !el.querySelector('img')) return '';
+  return cleanRich(el.innerHTML).trim();
+}
+function rv(id){ return richVal('cf-'+id); }
+function setRich(id, value){ const el=document.getElementById(id); if(el) el.innerHTML=toRichHTML(value); }
+
+// ── Photos multiples par œuvre ──
+function getPhotos(a){ if(Array.isArray(a.photos)&&a.photos.length) return a.photos; return a.photo?[a.photo]:[]; }
+function photoGridHTML(list, ctx){
+  if(!list.length) return '';
+  return `<div class="photos-grid">${list.map((p,i)=>`
+    <div class="photo-tile ${i===0?'cover':''}">
+      <img src="${p}" />
+      ${i===0?'<span class="pt-cover">★ Couverture</span>':`<button type="button" class="pt-star" title="Définir comme couverture" onclick="movePhotoFirst('${ctx}',${i})">★ Couv.</button>`}
+      <button type="button" class="pt-del" title="Supprimer cette photo" onclick="removePhoto('${ctx}',${i})">✕</button>
+    </div>`).join('')}</div>
+    <div style="font-size:11px;color:var(--text-muted);margin-top:6px">${list.length} photo${list.length>1?'s':''} — la 1re (★) est la couverture affichée dans la galerie.</div>`;
+}
+function ctxList(ctx){ return ctx==='em'?emPhotos:ctx==='na'?addPhotos:collPhotos; }
+function rerenderPhotos(ctx){
+  if(ctx==='em') renderPhotoGrid('em-photoPreview', emPhotos, 'em');
+  else if(ctx==='na'){ renderPhotoGrid('naPhotoPreview', addPhotos, 'na'); updateAddPreview(); }
+  else renderPhotoGrid('ncPhotoPreview', collPhotos, 'nc');
+}
+function renderPhotoGrid(previewId, list, ctx){
+  const prev=document.getElementById(previewId);
+  if(prev) prev.innerHTML=photoGridHTML(list, ctx);
+}
+function movePhotoFirst(ctx,i){ const l=ctxList(ctx); l.unshift(l.splice(i,1)[0]); rerenderPhotos(ctx); }
+function removePhoto(ctx,i){ ctxList(ctx).splice(i,1); rerenderPhotos(ctx); }
+async function addFilesTo(ctx, event){
+  const files=[...(event.target.files||[])]; if(!files.length) return;
+  const map={em:'em-photoPreview',na:'naPhotoPreview',nc:'ncPhotoPreview'};
+  const prev=document.getElementById(map[ctx]);
+  if(prev) prev.innerHTML=`<div style="font-size:12px;color:var(--text-muted)">⏳ Compression de ${files.length} photo${files.length>1?'s':''}...</div>`;
+  for(const f of files){ ctxList(ctx).push(await compressImage(f)); }
+  event.target.value='';
+  rerenderPhotos(ctx);
+}
+
 function thumbHTML(a) {
-  if (a.photo) {
-    return `<img src="${a.photo}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1" onerror="this.style.display='none'" />`;
+  const ph = getPhotos(a);
+  if (ph.length) {
+    const badge = ph.length>1 ? `<span style="position:absolute;bottom:6px;right:6px;z-index:2;background:rgba(0,0,0,.65);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px">📷 ${ph.length}</span>` : '';
+    return `<img src="${ph[0]}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1" onerror="this.style.display='none'" />${badge}`;
   }
   return `<span class="artwork-thumb-emoji" style="position:relative;z-index:1">${a.emoji}</span>`;
 }
@@ -898,7 +1079,7 @@ function deleteArtwork(id) {
 // ── Edit modal ──
 function openEditModal(id) {
   const a = artworks.find(x=>x.id===id); if(!a) return;
-  editingId = id; emPhotoUrl = a.photo||null;
+  editingId = id; emPhotos = getPhotos(a).slice();
   document.getElementById('em-id').value = id;
   document.getElementById('em-title').value = a.title;
   document.getElementById('em-cat').value = normalizeCat(a.category);
@@ -906,10 +1087,10 @@ function openEditModal(id) {
   document.getElementById('em-dims').value = a.dimensions||'';
   document.getElementById('em-emoji').value = a.emoji;
   document.getElementById('em-gradient').value = a.gradient;
-  document.getElementById('em-desc').value = a.description||'';
+  document.getElementById('em-desc-wrap').innerHTML = richEditor('em-desc', a.description||'', "Décrivez l'œuvre…");
   document.getElementById('em-sold').value = String(a.sold);
   document.getElementById('em-showcase').checked = !!a.showcase;
-  document.getElementById('em-photoPreview').innerHTML = a.photo?`<img src="${a.photo}" style="width:100px;height:80px;object-fit:cover;border-radius:8px;border:2px solid var(--glass-border)" />`:'';
+  renderPhotoGrid('em-photoPreview', emPhotos, 'em');
   document.getElementById('em-photo').value='';
   document.getElementById('editModal').style.display='flex';
   document.body.style.overflow='hidden';
@@ -919,18 +1100,10 @@ function closeEditModal(e) {
   if (e&&e.target!==document.getElementById('editModal')) return;
   document.getElementById('editModal').style.display='none';
   document.body.style.overflow='';
-  editingId=null; emPhotoUrl=null;
+  editingId=null; emPhotos=[];
 }
 
-function handleEmPhoto(event) {
-  const file=event.target.files[0]; if(!file) return;
-  const prev=document.getElementById('em-photoPreview');
-  if(prev) prev.innerHTML=`<div style="font-size:12px;color:var(--text-muted)">⏳ Compression...</div>`;
-  compressImage(file).then(dataUrl => {
-    emPhotoUrl = dataUrl;
-    if(prev) prev.innerHTML=`<img src="${dataUrl}" style="width:120px;height:96px;object-fit:cover;border-radius:10px;border:2px solid var(--gold);display:block" /><div style="font-size:11px;color:var(--green);margin-top:6px">✓ Photo prête</div>`;
-  });
-}
+function handleEmPhoto(event) { addFilesTo('em', event); }
 
 function saveEditArtwork() {
   const id = Number(document.getElementById('em-id').value);
@@ -944,10 +1117,11 @@ function saveEditArtwork() {
     dimensions: document.getElementById('em-dims').value,
     emoji: document.getElementById('em-emoji').value||'🎨',
     gradient: document.getElementById('em-gradient').value,
-    description: document.getElementById('em-desc').value,
+    description: richVal('em-desc'),
     sold: document.getElementById('em-sold').value==='true',
     showcase: !!document.getElementById('em-showcase').checked,
-    ...(emPhotoUrl?{photo:emPhotoUrl}:{}),
+    photos: emPhotos.slice(),
+    photo: emPhotos[0]||null,
   }:a);
   save();
   toast('Œuvre mise à jour ✓','success');
@@ -976,10 +1150,10 @@ function renderAdd() {
         <div class="form-group full">
           <label class="form-label">📷 Photo de l'œuvre <span class="form-hint">(recommandé)</span></label>
           <div class="upload-zone" id="naUploadZone">
-            <input type="file" id="na-photo" accept="image/*" onchange="handleAddPhoto(event)" />
+            <input type="file" id="na-photo" accept="image/*" multiple onchange="handleAddPhoto(event)" />
             <div id="naUploadContent">
               <div class="upload-icon">📷</div>
-              <div class="upload-label">Glissez une photo ici ou cliquez pour choisir</div>
+              <div class="upload-label">Glissez une ou plusieurs photos, ou cliquez pour choisir</div>
               <div class="upload-hint">JPG, PNG, WEBP</div>
             </div>
             <div id="naPhotoPreview" style="margin-top:10px"></div>
@@ -987,7 +1161,7 @@ function renderAdd() {
         </div>
         <div class="form-group"><label class="form-label">Emoji <span class="form-hint">(si pas de photo)</span></label><input class="form-input" id="na-emoji" value="🎨" oninput="updateAddPreview()" /></div>
         <div class="form-group"><label class="form-label">Fond (gradient CSS)</label><input class="form-input" id="na-gradient" value="linear-gradient(135deg,#1a0533,#3d1458,#6b21a8)" oninput="updateAddPreview()" /></div>
-        <div class="form-group full"><label class="form-label">Description</label><textarea class="form-textarea" id="na-desc" placeholder="Décrivez l'œuvre : technique, inspiration, dimensions..." rows="4"></textarea></div>
+        <div class="form-group full"><label class="form-label">Description <span class="form-hint">(gras, italique, listes, retours à la ligne…)</span></label>${richEditor('na-desc','',"Décrivez l'œuvre : technique, inspiration, dimensions...")}</div>
         <div class="form-group full">
           <label style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:rgba(201,168,76,.06);border:1px solid var(--glass-border);border-radius:var(--radius-sm);cursor:pointer">
             <input type="checkbox" id="na-showcase" style="width:18px;height:18px;margin-top:2px;accent-color:var(--gold);cursor:pointer" />
@@ -1013,16 +1187,7 @@ function renderAdd() {
     </div>`;
 }
 
-function handleAddPhoto(event) {
-  const file=event.target.files[0]; if(!file) return;
-  const prev=document.getElementById('naPhotoPreview');
-  if(prev) prev.innerHTML=`<div style="font-size:12px;color:var(--text-muted)">⏳ Compression en cours...</div>`;
-  compressImage(file).then(dataUrl => {
-    addPhotoUrl = dataUrl;
-    if(prev) prev.innerHTML=`<img src="${dataUrl}" style="width:120px;height:96px;object-fit:cover;border-radius:10px;border:2px solid var(--gold);display:block" /><div style="font-size:11px;color:var(--green);margin-top:6px">✓ Photo prête (${Math.round(dataUrl.length/1024)} ko)</div>`;
-    updateAddPreview();
-  });
-}
+function handleAddPhoto(event) { addFilesTo('na', event); }
 
 function updateAddPreview() {
   const title=document.getElementById('na-title')?.value;
@@ -1035,7 +1200,7 @@ function updateAddPreview() {
     prev.style.display='flex';
     const thumb=document.getElementById('naPreviewThumb');
     thumb.style.background=gradient;
-    thumb.innerHTML=addPhotoUrl?`<img src="${addPhotoUrl}" style="width:100%;height:100%;object-fit:cover" />`:emoji;
+    thumb.innerHTML=addPhotos[0]?`<img src="${addPhotos[0]}" style="width:100%;height:100%;object-fit:cover" />`:emoji;
     document.getElementById('naPreviewTitle').textContent=title;
     document.getElementById('naPreviewCat').textContent=getCatLabel(cat);
     document.getElementById('naPreviewPrice').textContent=fmt(Number(price)||0);
@@ -1047,7 +1212,7 @@ function addArtwork() {
   const price=document.getElementById('na-price')?.value;
   if(!title||!price){toast('Titre et prix requis','error');return;}
   const showcase=!!document.getElementById('na-showcase')?.checked;
-  artworks.push({id:Date.now(),title,category:document.getElementById('na-cat').value,price:Number(price),dimensions:document.getElementById('na-dims').value,description:document.getElementById('na-desc').value,emoji:document.getElementById('na-emoji').value||'🎨',gradient:document.getElementById('na-gradient').value,sold:false,showcase,...(addPhotoUrl?{photo:addPhotoUrl}:{})});
+  artworks.push({id:Date.now(),title,category:document.getElementById('na-cat').value,price:Number(price),dimensions:document.getElementById('na-dims').value,description:richVal('na-desc'),emoji:document.getElementById('na-emoji').value||'🎨',gradient:document.getElementById('na-gradient').value,sold:false,showcase,photos:addPhotos.slice(),photo:addPhotos[0]||null});
   save();
   toast('Œuvre publiée ✓','success');
   clearAddForm();
@@ -1055,14 +1220,15 @@ function addArtwork() {
 }
 
 function clearAddForm() {
-  ['na-title','na-price','na-dims','na-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['na-title','na-price','na-dims'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  setRich('na-desc','');
   const e=document.getElementById('na-emoji');if(e)e.value='🎨';
   const g=document.getElementById('na-gradient');if(g)g.value='linear-gradient(135deg,#1a0533,#3d1458,#6b21a8)';
   const p=document.getElementById('na-photo');if(p)p.value='';
   const pp=document.getElementById('naPhotoPreview');if(pp)pp.innerHTML='';
   const prev=document.getElementById('naPreview');if(prev)prev.style.display='none';
   const sc=document.getElementById('na-showcase');if(sc)sc.checked=false;
-  addPhotoUrl=null;
+  addPhotos=[];
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1090,10 +1256,10 @@ function renderCollectionAdmin() {
         <div class="form-group full">
           <label class="form-label">📷 Photo de l'œuvre <span class="form-hint">(recommandé)</span></label>
           <div class="upload-zone" id="ncUploadZone">
-            <input type="file" id="nc-photo" accept="image/*" onchange="handleCollPhoto(event)" />
+            <input type="file" id="nc-photo" accept="image/*" multiple onchange="handleCollPhoto(event)" />
             <div>
               <div class="upload-icon">📷</div>
-              <div class="upload-label">Glissez une photo ici ou cliquez pour choisir</div>
+              <div class="upload-label">Glissez une ou plusieurs photos, ou cliquez pour choisir</div>
               <div class="upload-hint">JPG, PNG, WEBP</div>
             </div>
             <div id="ncPhotoPreview" style="margin-top:10px"></div>
@@ -1101,7 +1267,7 @@ function renderCollectionAdmin() {
         </div>
         <div class="form-group"><label class="form-label">Emoji <span class="form-hint">(si pas de photo)</span></label><input class="form-input" id="nc-emoji" value="🖼️" /></div>
         <div class="form-group"><label class="form-label">Fond (gradient CSS)</label><input class="form-input" id="nc-gradient" value="linear-gradient(135deg,#2a1a00,#8c6200,#c9a84c)" /></div>
-        <div class="form-group full"><label class="form-label">Description</label><textarea class="form-textarea" id="nc-desc" placeholder="Quelques mots sur l'œuvre : technique, inspiration, souvenir..." rows="3"></textarea></div>
+        <div class="form-group full"><label class="form-label">Description <span class="form-hint">(gras, italique, listes…)</span></label>${richEditor('nc-desc','',"Quelques mots sur l'œuvre : technique, inspiration, souvenir...")}</div>
       </div>
       <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
         <button class="btn btn-primary btn-lg" onclick="addToCollection()">🖼️ Ajouter à la collection</button>
@@ -1133,15 +1299,7 @@ function renderCollectionAdmin() {
     </div>`}`;
 }
 
-function handleCollPhoto(event) {
-  const file=event.target.files[0]; if(!file) return;
-  const prev=document.getElementById('ncPhotoPreview');
-  if(prev) prev.innerHTML=`<div style="font-size:12px;color:var(--text-muted)">⏳ Compression en cours...</div>`;
-  compressImage(file).then(dataUrl => {
-    collPhotoUrl = dataUrl;
-    if(prev) prev.innerHTML=`<img src="${dataUrl}" style="width:120px;height:96px;object-fit:cover;border-radius:10px;border:2px solid var(--gold);display:block" /><div style="font-size:11px;color:var(--green);margin-top:6px">✓ Photo prête (${Math.round(dataUrl.length/1024)} ko)</div>`;
-  });
-}
+function handleCollPhoto(event) { addFilesTo('nc', event); }
 
 function addToCollection() {
   const title=document.getElementById('nc-title')?.value.trim();
@@ -1154,12 +1312,13 @@ function addToCollection() {
     category:document.getElementById('nc-cat').value,
     price:0,
     dimensions:dims,
-    description:document.getElementById('nc-desc').value,
+    description:richVal('nc-desc'),
     emoji:document.getElementById('nc-emoji').value||'🖼️',
     gradient:document.getElementById('nc-gradient').value,
     sold:false,
     showcase:true,
-    ...(collPhotoUrl?{photo:collPhotoUrl}:{})
+    photos:collPhotos.slice(),
+    photo:collPhotos[0]||null
   });
   save();
   toast('Œuvre ajoutée à la collection privée ✓','success');
@@ -1169,12 +1328,13 @@ function addToCollection() {
 }
 
 function clearCollForm() {
-  ['nc-title','nc-dims','nc-desc','nc-year'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['nc-title','nc-dims','nc-year'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  setRich('nc-desc','');
   const e=document.getElementById('nc-emoji');if(e)e.value='🖼️';
   const g=document.getElementById('nc-gradient');if(g)g.value='linear-gradient(135deg,#2a1a00,#8c6200,#c9a84c)';
   const p=document.getElementById('nc-photo');if(p)p.value='';
   const pp=document.getElementById('ncPhotoPreview');if(pp)pp.innerHTML='';
-  collPhotoUrl=null;
+  collPhotos=[];
 }
 
 function removeFromCollection(id) {
@@ -1810,6 +1970,7 @@ function testStripeLink() {
 // ═══════════════════════════════════════════════════════════════
 function field(id,label,val,type='text',hint='',rows=3){
   const h=hint?`<span class="form-hint">${hint}</span>`:'';
+  if(type==='rich') return `<div class="form-group full"><label class="form-label">${label}${h}</label>${richEditor('cf-'+id, val||'')}</div>`;
   if(type==='textarea') return `<div class="form-group full"><label class="form-label">${label}${h}</label><textarea class="form-textarea" id="cf-${id}" rows="${rows}">${val}</textarea></div>`;
   return `<div class="form-group"><label class="form-label">${label}${h}</label><input class="form-input" type="${type}" id="cf-${id}" value="${String(val).replace(/"/g,'&quot;')}" /></div>`;
 }
@@ -1828,7 +1989,7 @@ function renderHeroEditor(){
       ${fullField('hero-badge','Badge (texte doré au-dessus)',h.badge)}
       ${fullField('hero-title','Titre principal',h.title)}
       ${fullField('hero-subtitle','Sous-titre (italique)',h.subtitle)}
-      ${fullField('hero-desc','Description',h.desc,'textarea')}
+      ${fullField('hero-desc','Description',h.desc,'rich')}
       ${field('hero-btn1','Bouton principal',h.btn1)}
       ${field('hero-btn2','Bouton secondaire',h.btn2)}
     </div>
@@ -1839,7 +2000,7 @@ function renderHeroEditor(){
   </div>`;
 }
 function saveHero(){
-  siteConfig.hero={badge:v('hero-badge'),title:v('hero-title'),subtitle:v('hero-subtitle'),desc:v('hero-desc'),btn1:v('hero-btn1'),btn2:v('hero-btn2')};
+  siteConfig.hero={badge:v('hero-badge'),title:v('hero-title'),subtitle:v('hero-subtitle'),desc:rv('hero-desc'),btn1:v('hero-btn1'),btn2:v('hero-btn2')};
   save();toast('Bannière mise à jour ✓','success');
 }
 
@@ -1852,26 +2013,26 @@ function renderAboutEditor(){
       ${sep('En-tête')}
       ${field('ab-label','Label doré (au-dessus du titre)',a.label)}
       ${field('ab-title','Titre / sous-titre',a.title)}
-      ${fullField('ab-intro1','Introduction — paragraphe 1',a.intro1,'textarea')}
-      ${fullField('ab-intro2','Introduction — paragraphe 2',a.intro2,'textarea')}
-      ${fullField('ab-quote','Citation (encadré sur la photo)',a.quote,'textarea')}
+      ${fullField('ab-intro1','Introduction — paragraphe 1',a.intro1,'rich')}
+      ${fullField('ab-intro2','Introduction — paragraphe 2',a.intro2,'rich')}
+      ${fullField('ab-quote','Citation (encadré sur la photo)',a.quote,'rich')}
 
       ${sep('Chapitre 1 — La technique')}
       ${field('ab-c1title','Titre du chapitre 1',a.c1title)}
-      ${fullField('ab-c1body','Chapitre 1 — texte',a.c1body,'textarea')}
+      ${fullField('ab-c1body','Chapitre 1 — texte',a.c1body,'rich')}
       ${fullField('ab-c1lines','Chapitre 1 — lignes accentuées (une par ligne)',(a.c1lines||[]).join('\n'),'textarea')}
-      ${fullField('ab-c1body2','Chapitre 1 — texte de fin',a.c1body2,'textarea')}
+      ${fullField('ab-c1body2','Chapitre 1 — texte de fin',a.c1body2,'rich')}
 
       ${sep('Chapitre 2 — Le parcours')}
       ${field('ab-c2title','Titre du chapitre 2',a.c2title)}
-      ${fullField('ab-c2body','Chapitre 2 — texte',a.c2body,'textarea')}
-      ${fullField('ab-c2body2','Chapitre 2 — texte de fin',a.c2body2,'textarea')}
+      ${fullField('ab-c2body','Chapitre 2 — texte',a.c2body,'rich')}
+      ${fullField('ab-c2body2','Chapitre 2 — texte de fin',a.c2body2,'rich')}
 
       ${sep('Chapitre 3 — Les émotions')}
       ${field('ab-c3title','Titre du chapitre 3',a.c3title)}
-      ${fullField('ab-c3body','Chapitre 3 — introduction',a.c3body,'textarea')}
+      ${fullField('ab-c3body','Chapitre 3 — introduction',a.c3body,'rich')}
       ${fullField('ab-c3bullets','Chapitre 3 — puces (une par ligne)',(a.c3bullets||[]).join('\n'),'textarea')}
-      ${fullField('ab-c3body2','Chapitre 3 — conclusion',a.c3body2,'textarea')}
+      ${fullField('ab-c3body2','Chapitre 3 — conclusion',a.c3body2,'rich')}
 
       ${sep('Divers')}
       ${field('ab-btn','Texte du bouton',a.btnLabel)}
@@ -1903,10 +2064,10 @@ function saveAbout(){
   const toArr=(id)=>v(id).split('\n').map(s=>s.trim()).filter(Boolean);
   Object.assign(siteConfig.about,{
     label:v('ab-label'), title:v('ab-title'),
-    intro1:v('ab-intro1'), intro2:v('ab-intro2'), quote:v('ab-quote'),
-    c1title:v('ab-c1title'), c1body:v('ab-c1body'), c1lines:toArr('ab-c1lines'), c1body2:v('ab-c1body2'),
-    c2title:v('ab-c2title'), c2body:v('ab-c2body'), c2body2:v('ab-c2body2'),
-    c3title:v('ab-c3title'), c3body:v('ab-c3body'), c3bullets:toArr('ab-c3bullets'), c3body2:v('ab-c3body2'),
+    intro1:rv('ab-intro1'), intro2:rv('ab-intro2'), quote:rv('ab-quote'),
+    c1title:v('ab-c1title'), c1body:rv('ab-c1body'), c1lines:toArr('ab-c1lines'), c1body2:rv('ab-c1body2'),
+    c2title:v('ab-c2title'), c2body:rv('ab-c2body'), c2body2:rv('ab-c2body2'),
+    c3title:v('ab-c3title'), c3body:rv('ab-c3body'), c3bullets:toArr('ab-c3bullets'), c3body2:rv('ab-c3body2'),
     btnLabel:v('ab-btn')
   });
   save();toast('À propos mis à jour ✓','success');
@@ -1925,7 +2086,7 @@ function renderProcessEditor(){
         <div class="form-grid">
           <div class="form-group"><label class="form-label">Emoji</label><input class="form-input" id="ps-${i}-icon" value="${s.icon}" style="font-size:18px" /></div>
           <div class="form-group"><label class="form-label">Titre</label><input class="form-input" id="ps-${i}-title" value="${s.title}" /></div>
-          <div class="form-group full"><label class="form-label">Description</label><textarea class="form-textarea" id="ps-${i}-desc" rows="2">${s.desc}</textarea></div>
+          <div class="form-group full"><label class="form-label">Description</label>${richEditor(`ps-${i}-desc`, s.desc)}</div>
         </div>
       </div>`).join('')}
     <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
@@ -1936,7 +2097,7 @@ function renderProcessEditor(){
 }
 function saveProcess(){
   siteConfig.process.label=v('pr-label');siteConfig.process.title=v('pr-title');
-  siteConfig.process.steps=siteConfig.process.steps.map((_,i)=>({icon:document.getElementById(`ps-${i}-icon`)?.value||'',num:String(i+1).padStart(2,'0'),title:document.getElementById(`ps-${i}-title`)?.value||'',desc:document.getElementById(`ps-${i}-desc`)?.value||''}));
+  siteConfig.process.steps=siteConfig.process.steps.map((_,i)=>({icon:document.getElementById(`ps-${i}-icon`)?.value||'',num:String(i+1).padStart(2,'0'),title:document.getElementById(`ps-${i}-title`)?.value||'',desc:richVal(`ps-${i}-desc`)}));
   save();toast('Processus mis à jour ✓','success');
 }
 
@@ -1954,7 +2115,7 @@ function renderTestimonialsEditor(){
           <div class="form-grid">
             <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="ti-${i}-name" value="${t.name}" /></div>
             <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="ti-${i}-date" value="${t.date}" /></div>
-            <div class="form-group full"><label class="form-label">Texte</label><textarea class="form-textarea" id="ti-${i}-text" rows="3">${t.text}</textarea></div>
+            <div class="form-group full"><label class="form-label">Texte</label>${richEditor(`ti-${i}-text`, t.text)}</div>
           </div>
         </div>`).join('')}
     </div>
@@ -1969,7 +2130,7 @@ function addTesti(){siteConfig.testimonials.items.push({name:'Nouveau client',da
 function removeTesti(i){siteConfig.testimonials.items.splice(i,1);renderPage('testimonials');}
 function saveTestimonials(){
   siteConfig.testimonials.label=v('te-label');siteConfig.testimonials.title=v('te-title');
-  siteConfig.testimonials.items=siteConfig.testimonials.items.map((_,i)=>({name:document.getElementById(`ti-${i}-name`)?.value||'',date:document.getElementById(`ti-${i}-date`)?.value||'',text:document.getElementById(`ti-${i}-text`)?.value||''}));
+  siteConfig.testimonials.items=siteConfig.testimonials.items.map((_,i)=>({name:document.getElementById(`ti-${i}-name`)?.value||'',date:document.getElementById(`ti-${i}-date`)?.value||'',text:richVal(`ti-${i}-text`)}));
   save();toast('Avis mis à jour ✓','success');
 }
 
@@ -1997,8 +2158,8 @@ function renderStagesEditor(){
     <div class="form-grid">
       ${field('st-label','Label doré',st.label)}
       ${field('st-title','Titre de la page',st.title)}
-      ${field('st-intro1','Introduction — paragraphe 1',st.intro1,'textarea','',3)}
-      ${field('st-intro2','Introduction — paragraphe 2',st.intro2,'textarea','',2)}
+      ${field('st-intro1','Introduction — paragraphe 1',st.intro1,'rich')}
+      ${field('st-intro2','Introduction — paragraphe 2',st.intro2,'rich')}
     </div>
 
     <div class="section-card-title" style="font-size:15px;margin:24px 0 12px">Formules proposées</div>
@@ -2009,7 +2170,7 @@ function renderStagesEditor(){
           <div class="form-grid">
             <div class="form-group"><label class="form-label">Emoji</label><input class="form-input" id="sf-${i}-icon" value="${esc(f.icon)}" style="font-size:18px" /></div>
             <div class="form-group"><label class="form-label">Titre</label><input class="form-input" id="sf-${i}-title" value="${esc(f.title)}" /></div>
-            <div class="form-group full"><label class="form-label">Description</label><textarea class="form-textarea" id="sf-${i}-desc" rows="2">${f.desc||''}</textarea></div>
+            <div class="form-group full"><label class="form-label">Description</label>${richEditor(`sf-${i}-desc`, f.desc||'')}</div>
             <div class="form-group full"><label class="form-label">Durée / tarif</label><input class="form-input" id="sf-${i}-meta" value="${esc(f.meta)}" /></div>
           </div>
         </div>`).join('')}
@@ -2033,13 +2194,13 @@ function captureStageFields(){
   st.formulas=st.formulas.map((f,i)=>({
     icon: document.getElementById('sf-'+i+'-icon')?.value ?? f.icon,
     title: document.getElementById('sf-'+i+'-title')?.value ?? f.title,
-    desc: document.getElementById('sf-'+i+'-desc')?.value ?? f.desc,
+    desc: document.getElementById('sf-'+i+'-desc') ? richVal('sf-'+i+'-desc') : f.desc,
     meta: document.getElementById('sf-'+i+'-meta')?.value ?? f.meta,
   }));
   if(document.getElementById('cf-st-label')) st.label=v('st-label');
   if(document.getElementById('cf-st-title')) st.title=v('st-title');
-  if(document.getElementById('cf-st-intro1')) st.intro1=v('st-intro1');
-  if(document.getElementById('cf-st-intro2')) st.intro2=v('st-intro2');
+  if(document.getElementById('cf-st-intro1')) st.intro1=rv('st-intro1');
+  if(document.getElementById('cf-st-intro2')) st.intro2=rv('st-intro2');
   if(document.getElementById('cf-st-practicalTitle')) st.practicalTitle=v('st-practicalTitle');
   if(document.getElementById('cf-st-practical')) st.practical=v('st-practical');
   if(document.getElementById('cf-st-btn')) st.btnLabel=v('st-btn');
@@ -2072,7 +2233,7 @@ function renderCtaEditor(){
     <div class="section-card-title">📣 Bandeau d'appel à l'action</div>
     <div class="form-grid">
       ${field('ct-label','Label (petit)',ct.label)} ${field('ct-title','Titre',ct.title)}
-      ${fullField('ct-desc','Description',ct.desc,'textarea','')}
+      ${fullField('ct-desc','Description',ct.desc,'rich','')}
       ${field('ct-btn1','Bouton principal',ct.btn1)} ${field('ct-btn2','Bouton secondaire',ct.btn2)}
     </div>
     <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
@@ -2082,7 +2243,7 @@ function renderCtaEditor(){
   </div>`;
 }
 function saveCta(){
-  siteConfig.cta={label:v('ct-label'),title:v('ct-title'),desc:v('ct-desc'),btn1:v('ct-btn1'),btn2:v('ct-btn2')};
+  siteConfig.cta={label:v('ct-label'),title:v('ct-title'),desc:rv('ct-desc'),btn1:v('ct-btn1'),btn2:v('ct-btn2')};
   save();toast('CTA mis à jour ✓','success');
 }
 

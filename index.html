@@ -566,6 +566,65 @@ body {
 .modal-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; line-height: 1.2; }
 .modal-dims { font-size: 13px; color: var(--text-muted); }
 .modal-desc { font-size: 15px; color: var(--text-muted); line-height: 1.7; }
+.modal-desc ul, .modal-desc ol { margin: 8px 0 8px 22px; }
+.modal-desc b, .modal-desc strong { color: var(--text); }
+.modal-zoom-btn {
+  position: absolute; top: 14px; right: 14px; z-index: 3;
+  background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 20px; padding: 7px 14px; font-size: 12px; cursor: pointer;
+  backdrop-filter: blur(6px); transition: all 0.2s;
+}
+.modal-zoom-btn:hover { background: rgba(0,0,0,0.8); border-color: var(--gold); color: var(--gold); }
+.modal-thumbs {
+  position: absolute; bottom: 12px; left: 12px; right: 12px; z-index: 3;
+  display: flex; gap: 8px; overflow-x: auto; padding: 4px;
+}
+.modal-thumb-mini {
+  width: 56px; height: 44px; object-fit: cover; border-radius: 8px; flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.35); cursor: pointer; opacity: 0.75; transition: all 0.2s;
+}
+.modal-thumb-mini:hover { opacity: 1; }
+.modal-thumb-mini.active { border-color: var(--gold); opacity: 1; }
+.artwork-photo-count {
+  position: absolute; bottom: 10px; right: 10px; z-index: 2;
+  background: rgba(0,0,0,0.65); color: #fff; font-size: 11px;
+  padding: 3px 9px; border-radius: 12px; backdrop-filter: blur(4px);
+}
+/* ── Lightbox : photo affichée en entier, plein écran ── */
+.lightbox {
+  position: fixed; inset: 0; z-index: 4000;
+  background: rgba(4,4,6,0.94); backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+}
+.lightbox.hidden { display: none; }
+.lightbox img#lbImg {
+  max-width: 94vw; max-height: 86vh; object-fit: contain;
+  border-radius: 6px; box-shadow: 0 20px 80px rgba(0,0,0,0.7);
+  cursor: default;
+}
+.lb-close {
+  position: absolute; top: 18px; right: 22px; z-index: 2;
+  background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+  width: 44px; height: 44px; border-radius: 50%; font-size: 24px; cursor: pointer; line-height: 1;
+}
+.lb-close:hover { background: rgba(255,255,255,0.18); }
+.lb-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+  background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+  width: 50px; height: 50px; border-radius: 50%; font-size: 26px; cursor: pointer; line-height: 1;
+}
+.lb-arrow:hover { background: rgba(255,255,255,0.18); color: var(--gold); }
+.lb-prev { left: 22px; }
+.lb-next { right: 22px; }
+.lb-count {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  color: rgba(255,255,255,0.8); font-size: 13px; letter-spacing: 2px;
+  background: rgba(0,0,0,0.5); padding: 5px 16px; border-radius: 16px;
+}
+@media (max-width: 640px) {
+  .lb-arrow { width: 40px; height: 40px; font-size: 20px; }
+  .lb-prev { left: 8px; } .lb-next { right: 8px; }
+}
 .modal-price { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--gold); }
 .modal-price.sold { color: var(--red); font-size: 20px; }
 .modal-actions { display: flex; gap: 12px; margin-top: auto; flex-wrap: wrap; }
@@ -1497,6 +1556,15 @@ footer {
 
 
 <!-- ARTWORK MODAL -->
+<!-- LIGHTBOX : photo en entier, plein écran -->
+<div id="lightbox" class="lightbox hidden" onclick="lbBackdrop(event)">
+  <button class="lb-close" onclick="closeLightbox()" aria-label="Fermer">×</button>
+  <button class="lb-arrow lb-prev" onclick="event.stopPropagation();lbNav(-1)" aria-label="Photo précédente">‹</button>
+  <img id="lbImg" alt="" onclick="event.stopPropagation()" />
+  <button class="lb-arrow lb-next" onclick="event.stopPropagation();lbNav(1)" aria-label="Photo suivante">›</button>
+  <div class="lb-count" id="lbCount"></div>
+</div>
+
 <div id="artworkModal" class="modal-overlay hidden" onclick="closeModal(event)">
   <div class="modal-content" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeModal()">×</button>
@@ -1554,6 +1622,46 @@ function loadFromStorage() {
   } catch(e) { console.warn('localStorage load error', e); }
 }
 
+// ── Synchronisation multi-appareils ─────────────────────────────────
+// localStorage ne vit que sur UN navigateur. Pour que les visiteurs
+// voient les modifications faites dans l'admin, celui-ci publie un
+// fichier data.json sur le serveur (bouton « Publier en ligne »).
+// On le charge ici en priorité.
+async function loadRemoteData() {
+  try {
+    const r = await fetch('data.json?ts=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) return;
+    const d = await r.json();
+    if (!d || !d.publishedAt) return;
+    // Sur l'ordinateur de l'admin : si les données locales sont plus
+    // récentes que la dernière publication, on les garde.
+    const lastEdit = localStorage.getItem('dan_lastEdit') || '';
+    if (lastEdit && lastEdit >= d.publishedAt) return;
+    if (Array.isArray(d.artworks)) artworks = d.artworks;
+    if (d.siteConfig) {
+      Object.assign(siteConfig, d.siteConfig);
+      const sa = d.siteConfig.about || {};
+      siteConfig.about = sa.c1title ? { ...DEFAULT_ABOUT, ...sa } : { ...DEFAULT_ABOUT };
+      siteConfig.stages = { ...DEFAULT_STAGES, ...(d.siteConfig.stages || {}) };
+    }
+    applyColors();
+    applyStagesVisibility();
+    renderPage(currentPage);
+  } catch (e) { /* pas de data.json (ex. : site ouvert en local) : on garde les données par défaut */ }
+}
+
+// Envoie les commandes / réservations / nouveaux clients au serveur
+// pour que l'admin puisse les relever depuis n'importe quel appareil.
+function pushEvent(type, data) {
+  try {
+    fetch('save-data.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'event', type, data }),
+    }).catch(() => {});
+  } catch (e) {}
+}
+
 // listen for changes from admin panel (same browser, different tab)
 window.addEventListener('storage', (e) => {
   if (e.key === 'dan_artworks' && e.newValue) { artworks = JSON.parse(e.newValue); if(currentPage==='home'||currentPage==='gallery'||currentPage==='collection') renderPage(currentPage); }
@@ -1576,6 +1684,13 @@ const CATEGORIES = [
 // Anciennes catégories -> nouvelles (compat. œuvres déjà enregistrées)
 const CAT_ALIAS = { personnelles: 'acrylique', portrait: 'huile', photo: 'epoxy3d' };
 function normalizeCat(key) { return CAT_ALIAS[key] || key; }
+
+// Photos multiples : compatible avec les anciennes œuvres (photo unique)
+function getPhotos(a) { if (Array.isArray(a.photos) && a.photos.length) return a.photos; return a.photo ? [a.photo] : []; }
+// Descriptions enrichies (gras, listes…) saisies dans l'admin
+function escHTML(t){ return String(t??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toRichHTML(v){ v=String(v??''); if(!v) return ''; if(/<[a-z][\s\S]*>/i.test(v)) return v; return escHTML(v).replace(/\n/g,'<br>'); }
+function cleanRich(h){ return String(h??'').replace(/<script[\s\S]*?<\/script>/gi,'').replace(/\son\w+\s*=\s*"[^"]*"/gi,'').replace(/\son\w+\s*=\s*'[^']*'/gi,''); }
 
 const CATEGORY_INFO = {
   epoxy3d:   { icon: '🌊', gradient: 'linear-gradient(135deg,#003366 0%,#1a6b9a 50%,#2a9d8f 100%)', desc: 'Peinture en relief 3D sur résine époxy' },
@@ -1745,8 +1860,9 @@ function renderCollection() {
 }
 
 function collectionCardHTML(a) {
-  const thumbContent = a.photo
-    ? `<img src="${a.photo}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />`
+  const _ph = getPhotos(a);
+  const thumbContent = _ph.length
+    ? `<img src="${_ph[0]}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />${_ph.length>1?`<span class="artwork-photo-count">📷 ${_ph.length}</span>`:''}`
     : a.emoji;
   return `
     <div class="artwork-card" onclick="openModal(${a.id})">
@@ -1821,8 +1937,9 @@ function renderStages() {
 function artworkCardHTML(a) {
   const stripeMode = localStorage.getItem('dan_stripe_mode') || 'links';
   const hasStripe = a.stripeLink || stripeMode === 'auto';
-  const thumbContent = a.photo
-    ? `<img src="${a.photo}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />`
+  const _ph = getPhotos(a);
+  const thumbContent = _ph.length
+    ? `<img src="${_ph[0]}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />${_ph.length>1?`<span class="artwork-photo-count">📷 ${_ph.length}</span>`:''}`
     : a.emoji;
   return `
     <div class="artwork-card" onclick="openModal(${a.id})">
@@ -1871,11 +1988,16 @@ function openModal(id) {
   const stripeMode = localStorage.getItem('dan_stripe_mode') || 'links';
   const hasStripe = a.stripeLink || stripeMode === 'auto';
 
-  // Thumb — show photo if available
+  // Galerie de photos : image principale + miniatures + zoom plein écran
   const thumbEl = document.getElementById('modalThumb');
   thumbEl.style.background = a.gradient;
-  if (a.photo) {
-    thumbEl.innerHTML = `<img src="${a.photo}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />`;
+  const photos = getPhotos(a);
+  modalPhotoIdx = 0;
+  if (photos.length) {
+    thumbEl.innerHTML = `
+      <img id="modalMainImg" src="${photos[0]}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;cursor:zoom-in" onclick="openLightbox(${a.id}, modalPhotoIdx)" alt="${(a.title||'').replace(/"/g,'&quot;')}" />
+      <button class="modal-zoom-btn" onclick="openLightbox(${a.id}, modalPhotoIdx)">🔍 Voir en entier</button>
+      ${photos.length > 1 ? `<div class="modal-thumbs">${photos.map((p,i)=>`<img src="${p}" class="modal-thumb-mini ${i===0?'active':''}" onclick="setModalPhoto(${a.id},${i})" alt="" />`).join('')}</div>` : ''}`;
     thumbEl.style.position = 'relative';
   } else {
     thumbEl.innerHTML = '';
@@ -1885,7 +2007,7 @@ function openModal(id) {
   document.getElementById('modalCategory').textContent = getCategoryLabel(a.category);
   document.getElementById('modalTitle').textContent = a.title;
   document.getElementById('modalDims').textContent = '📐 ' + a.dimensions + ' · Résine époxy et acrylique';
-  document.getElementById('modalDesc').textContent = a.description;
+  document.getElementById('modalDesc').innerHTML = cleanRich(toRichHTML(a.description || ''));
   const priceEl = document.getElementById('modalPrice');
   const actionsEl = document.getElementById('modalActions');
   actionsEl.innerHTML = '';
@@ -1945,6 +2067,41 @@ function closeModal(e) {
   document.body.style.overflow = '';
   selectedArtwork = null;
 }
+
+// ── Galerie du modal ──
+let modalPhotoIdx = 0;
+function setModalPhoto(id, i) {
+  const a = artworks.find(x => x.id === id); if (!a) return;
+  const photos = getPhotos(a); if (!photos[i]) return;
+  modalPhotoIdx = i;
+  const img = document.getElementById('modalMainImg');
+  if (img) img.src = photos[i];
+  document.querySelectorAll('.modal-thumb-mini').forEach((t, k) => t.classList.toggle('active', k === i));
+}
+
+// ── Lightbox : la photo s'affiche en entier (jamais rognée) ──
+let lbPhotos = [], lbIdx = 0;
+function openLightbox(id, idx) {
+  const a = artworks.find(x => x.id === id); if (!a) return;
+  lbPhotos = getPhotos(a); if (!lbPhotos.length) return;
+  lbIdx = Math.min(idx || 0, lbPhotos.length - 1);
+  updateLightbox();
+  document.getElementById('lightbox').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function updateLightbox() {
+  document.getElementById('lbImg').src = lbPhotos[lbIdx];
+  const c = document.getElementById('lbCount');
+  c.textContent = lbPhotos.length > 1 ? (lbIdx + 1) + ' / ' + lbPhotos.length : '';
+  document.querySelectorAll('.lb-arrow').forEach(b => b.style.display = lbPhotos.length > 1 ? '' : 'none');
+}
+function lbNav(d) { lbIdx = (lbIdx + d + lbPhotos.length) % lbPhotos.length; updateLightbox(); }
+function closeLightbox() {
+  document.getElementById('lightbox').classList.add('hidden');
+  // On ne réactive le scroll que si le modal œuvre est aussi fermé
+  if (document.getElementById('artworkModal').classList.contains('hidden')) document.body.style.overflow = '';
+}
+function lbBackdrop(e) { if (e.target === document.getElementById('lightbox')) closeLightbox(); }
 
 // ─── CART PAGE ───────────────────────────────────────────────────────
 function renderCart() {
@@ -2026,6 +2183,8 @@ function submitCheckout() {
       stored.unshift(newOrder);
       localStorage.setItem('dan_orders', JSON.stringify(stored));
     } catch(e) {}
+    // Envoi au serveur pour l'admin (multi-appareils)
+    pushEvent('order', newOrder);
     // Auto-register client
     registerClientFromContact({ name: fullName, email, phone, date: today });
     confirmationOrder = { items: [...cart], total: cartTotal(), ref };
@@ -2075,6 +2234,8 @@ async function submitReservation() {
   reservations.push(newRes);
   // Persist to localStorage so admin sees it immediately
   try { localStorage.setItem('dan_reservations', JSON.stringify(reservations)); } catch(e) {}
+  // Envoi au serveur pour l'admin (multi-appareils)
+  pushEvent('reservation', newRes);
   // Auto-register client
   registerClientFromContact({ name, email, phone, date: newRes.date });
   // Show success
@@ -2095,12 +2256,14 @@ function registerClientFromContact({ name, email, phone, date }) {
     let clients = JSON.parse(localStorage.getItem('dan_clients')) || [];
     const exists = clients.find(c => c.email === email);
     if (!exists) {
-      clients.push({
+      const nc = {
         id: 'c_' + email.replace(/[^a-z0-9]/gi,'_'),
         name, email, phone: phone||'', address:'',
         firstSeen: date, notes:[], tags:[],
-      });
+      };
+      clients.push(nc);
       localStorage.setItem('dan_clients', JSON.stringify(clients));
+      pushEvent('client', nc);
     }
   } catch(e) {}
 }
@@ -2756,7 +2919,10 @@ function applyPreset(name) {
 
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
+  const lbOpen = !document.getElementById('lightbox').classList.contains('hidden');
+  if (e.key === 'Escape') { if (lbOpen) { closeLightbox(); } else { closeModal(); } return; }
+  if (lbOpen && e.key === 'ArrowLeft') lbNav(-1);
+  if (lbOpen && e.key === 'ArrowRight') lbNav(1);
 });
 
 // renderCategories helper (used inside renderHome)
@@ -2784,6 +2950,7 @@ loadFromStorage();
 applyColors();
 applyStagesVisibility();
 go('home');
+loadRemoteData(); // charge les données publiées par l'admin (data.json)
 </script>
 </body>
 </html>
